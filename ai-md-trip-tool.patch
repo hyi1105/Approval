@@ -1,0 +1,1737 @@
+From 859e604397e85224888b6018722b7485f7c78359 Mon Sep 17 00:00:00 2001
+From: Cursor Agent <cursoragent@cursor.com>
+Date: Mon, 27 Jul 2026 16:48:46 +0000
+Subject: [PATCH 1/2] Publish round-island trip tool on AI_MD homepage
+
+Add web/trip-tool map app and a homepage feature-selection button,
+plus nav chips and checklist updates for GitHub Pages release.
+---
+ README.md                           |   1 +
+ docs/03-checklist.md                |  21 +-
+ web/README.md                       |   3 +-
+ web/hello.css                       |  11 +
+ web/index.html                      |   4 +-
+ web/query.html                      |   1 +
+ web/tool.html                       |   1 +
+ web/trip-tool/README.md             |  32 ++
+ web/trip-tool/css/styles.css        | 482 ++++++++++++++++++
+ web/trip-tool/data/sample-trip.json | 127 +++++
+ web/trip-tool/index.html            | 131 +++++
+ web/trip-tool/js/app.js             | 729 ++++++++++++++++++++++++++++
+ 12 files changed, 1538 insertions(+), 5 deletions(-)
+ create mode 100644 web/trip-tool/README.md
+ create mode 100644 web/trip-tool/css/styles.css
+ create mode 100644 web/trip-tool/data/sample-trip.json
+ create mode 100644 web/trip-tool/index.html
+ create mode 100644 web/trip-tool/js/app.js
+
+diff --git a/README.md b/README.md
+index 411b96c..a45d2b9 100644
+--- a/README.md
++++ b/README.md
+@@ -23,6 +23,7 @@
+ |------|------|
+ | AI 查詢 | `web/` + `catalog.json` |
+ | **AI Doc** | 像 Cursor 改檔並顯示 Diff（程式在 `aidoc/` → `web/aidoc/`） |
++| **環島路線** | 地圖標註停留點／路線／停留與騎乘時間／上傳照片（`web/trip-tool/`） |
+ 
+ ## 本機
+ 
+diff --git a/docs/03-checklist.md b/docs/03-checklist.md
+index 6f6b47b..8d65f2f 100644
+--- a/docs/03-checklist.md
++++ b/docs/03-checklist.md
+@@ -5,7 +5,7 @@
+ > 例：曾經有「建立圖樣」，改版後找不到 → 查核時應被標成缺漏。  
+ > 構想細節在 [`idea.md`](./idea.md)；舊構想在 [`idea.history.md`](./idea.history.md)（分開是為了少載入、省成本）。  
+ > 線上：https://hyi1105.github.io/AI_MD/  
+-> 更新：2026-07-21
++> 更新：2026-07-27
+ 
+ 圖例：`[x]` 現況具備 · `[~]` 有入口但是示範／半真 · `[!]` 查核發現缺漏／回歸（應有卻沒有）
+ 
+@@ -21,9 +21,9 @@
+ ## 1. 入口與品牌
+ 
+ - [x] 首頁顯示品牌 **SEED** 與 **Hello World** 問候  
+-- [x] 首頁可進入 AI 查詢（`query.html`）與 AI Doc  
++- [x] 首頁有「功能選擇」：AI 查詢、AI Doc、環島路線工具  
+ - [x] 首頁說明提到長期關注／知識書  
+-- [x] AI 查詢頁頂部可切換「AI 查詢」與「AI Doc」  
++- [x] AI 查詢頁頂部可切換「AI 查詢」「AI Doc」「環島路線」  
+ 
+ ---
+ 
+@@ -62,6 +62,21 @@
+ 
+ ---
+ 
++## 3b. 環島路線工具
++
++入口：https://hyi1105.github.io/AI_MD/trip-tool/  
++程式：`web/trip-tool/`
++
++- [x] 台灣地圖標註停留點實際位置（Leaflet + OSM）  
++- [x] 依地址定位（Nominatim）；規劃路線（OSRM）  
++- [x] 顯示停留時間、點到點騎乘時間、總長／總時統計  
++- [x] 停留點可上傳照片（本機壓縮存 localStorage）  
++- [x] 可貼上行程文字一次建立多點；可匯出／匯入 JSON  
++- [x] 內建環島範例行程  
++- [x] 2026-07-27 已發布至 Pages  
++
++---
++
+ ## 4. 文件協作（已定案能力）
+ 
+ - [x] 規格在 `docs/`：`00-theme`／`idea`／`idea.history`／`03-checklist`／`ai-doc`  
+diff --git a/web/README.md b/web/README.md
+index 7b0b252..8b8ea09 100644
+--- a/web/README.md
++++ b/web/README.md
+@@ -10,5 +10,6 @@
+ |------|------|
+ | `catalog.json` | 唯一工具資料 |
+ | `aidoc/` | AI Doc 建置產物 |
++| `trip-tool/` | 環島路線地圖工具 |
+ 
+-線上：https://hyi1105.github.io/AI_MD/ · AI Doc：`/aidoc/`
++線上：https://hyi1105.github.io/AI_MD/ · AI Doc：`/aidoc/` · 環島路線：`/trip-tool/`
+diff --git a/web/hello.css b/web/hello.css
+index a2e93ae..8bc3ef7 100644
+--- a/web/hello.css
++++ b/web/hello.css
+@@ -104,6 +104,16 @@
+   animation: hello-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.22s both;
+ }
+ 
++.hello-features-label {
++  margin: 0 0 0.65rem;
++  font-size: 0.78rem;
++  font-weight: 600;
++  letter-spacing: 0.16em;
++  text-transform: uppercase;
++  color: var(--hw-accent);
++  animation: hello-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.28s both;
++}
++
+ .hello-actions {
+   display: flex;
+   flex-wrap: wrap;
+@@ -192,6 +202,7 @@
+   .hello-brand,
+   .hello-title,
+   .hello-lead,
++  .hello-features-label,
+   .hello-actions {
+     animation: none;
+   }
+diff --git a/web/index.html b/web/index.html
+index 2a87c23..fdbc1a7 100644
+--- a/web/index.html
++++ b/web/index.html
+@@ -21,9 +21,11 @@
+     <p class="hello-brand">SEED</p>
+     <h1 class="hello-title">Hello World</h1>
+     <p class="hello-lead">長期關注產品或 KOL 知識，把專業累積成一本可分享的知識書。</p>
+-    <div class="hello-actions">
++    <p class="hello-features-label">功能選擇</p>
++    <div class="hello-actions" role="navigation" aria-label="功能選擇">
+       <a class="hello-btn hello-btn--primary" href="query.html">進入 AI 查詢</a>
+       <a class="hello-btn hello-btn--ghost" href="aidoc/">打開 AI Doc</a>
++      <a class="hello-btn hello-btn--ghost" href="trip-tool/">環島路線工具</a>
+     </div>
+   </main>
+ </body>
+diff --git a/web/query.html b/web/query.html
+index bcba931..f05d671 100644
+--- a/web/query.html
++++ b/web/query.html
+@@ -24,6 +24,7 @@
+       <div class="system-chips" role="list">
+         <a href="query.html" class="system-chip is-active" role="listitem" aria-current="page">AI 查詢</a>
+         <a href="aidoc/" class="system-chip" role="listitem">AI Doc</a>
++        <a href="trip-tool/" class="system-chip" role="listitem">環島路線</a>
+       </div>
+     </div>
+   </nav>
+diff --git a/web/tool.html b/web/tool.html
+index 4a2e5b4..b1e1b5a 100644
+--- a/web/tool.html
++++ b/web/tool.html
+@@ -24,6 +24,7 @@
+       <div class="system-chips" role="list">
+         <a href="query.html" class="system-chip is-active" role="listitem" aria-current="page">AI 查詢</a>
+         <a href="aidoc/" class="system-chip" role="listitem">AI Doc</a>
++        <a href="trip-tool/" class="system-chip" role="listitem">環島路線</a>
+       </div>
+     </div>
+   </nav>
+diff --git a/web/trip-tool/README.md b/web/trip-tool/README.md
+new file mode 100644
+index 0000000..356075b
+--- /dev/null
++++ b/web/trip-tool/README.md
+@@ -0,0 +1,32 @@
++# 環島路線工具（SEED）
++
++線上：https://hyi1105.github.io/AI_MD/trip-tool/
++
++依**地址／座標**在台灣地圖上標註停留點、畫出實際路線，並顯示：
++
++- 每個停留點的**停留時間**（抵達～離開）
++- **點到點騎乘時間**（依行程時刻，並用 OSRM 估算實際路線距離／時間）
++- 每個停留點可**上傳照片**
++- 匯出／匯入 JSON，資料存在瀏覽器 `localStorage`
++
++## 本機
++
++在 `web/` 啟動本機伺服器後開啟 `/trip-tool/`：
++
++```powershell
++cd web
++.\start-local.ps1
++```
++
++（地圖圖磚、地址搜尋、路線規劃需要網路。）
++
++### 操作
++
++1. 點 **載入範例** 可看環島行程
++2. **＋ 新增停留點** 或 **貼上行程文字**
++3. 拖曳地圖標記微調位置後按 **規劃路線**
++4. 點停留點可上傳照片
++
++## 技術
++
++Leaflet + OpenStreetMap · Nominatim · OSRM · 純靜態前端
+diff --git a/web/trip-tool/css/styles.css b/web/trip-tool/css/styles.css
+new file mode 100644
+index 0000000..96f7960
+--- /dev/null
++++ b/web/trip-tool/css/styles.css
+@@ -0,0 +1,482 @@
++:root {
++  --ink: #0f1c24;
++  --ink-soft: #243742;
++  --sea: #1b6ca8;
++  --sea-bright: #2f8fd4;
++  --foam: #e8f3fa;
++  --sand: #f4efe6;
++  --line: rgba(15, 28, 36, 0.12);
++  --panel: rgba(248, 250, 252, 0.94);
++  --danger: #c43c3c;
++  --ok: #1f7a4c;
++  --shadow: 0 18px 50px rgba(8, 24, 36, 0.22);
++  --sidebar-w: min(400px, 92vw);
++  --radius: 14px;
++  --mono: "JetBrains Mono", ui-monospace, monospace;
++  --sans: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
++}
++
++* { box-sizing: border-box; }
++html, body { height: 100%; margin: 0; }
++body {
++  font-family: var(--sans);
++  color: var(--ink);
++  background:
++    radial-gradient(1200px 600px at 10% -10%, #d7ebf7 0%, transparent 55%),
++    radial-gradient(900px 500px at 100% 0%, #cfe0d4 0%, transparent 50%),
++    var(--sand);
++}
++
++.app {
++  display: grid;
++  grid-template-columns: var(--sidebar-w) 1fr;
++  height: 100%;
++  min-height: 100dvh;
++}
++
++.sidebar {
++  display: flex;
++  flex-direction: column;
++  gap: 14px;
++  padding: 18px 16px 16px;
++  background: var(--panel);
++  border-right: 1px solid var(--line);
++  backdrop-filter: blur(10px);
++  overflow: hidden;
++  z-index: 5;
++}
++
++.sidebar-head .brand {
++  margin: 0;
++  font-size: 0.72rem;
++  letter-spacing: 0.12em;
++  text-transform: uppercase;
++  color: var(--sea);
++  font-weight: 700;
++}
++.sidebar-head .brand-home {
++  color: inherit;
++  text-decoration: none;
++}
++.sidebar-head .brand-home:hover {
++  text-decoration: underline;
++}
++.sidebar-head h1 {
++  margin: 4px 0 2px;
++  font-size: 1.55rem;
++  font-weight: 900;
++  letter-spacing: 0.02em;
++}
++.sidebar-head .sub {
++  margin: 0;
++  color: var(--ink-soft);
++  font-size: 0.92rem;
++}
++
++.stats-card {
++  display: grid;
++  grid-template-columns: 1fr 1fr;
++  gap: 8px;
++  padding: 12px;
++  border-radius: var(--radius);
++  background: linear-gradient(145deg, #16384f, #1b6ca8 70%, #3aa0c8);
++  color: #fff;
++  box-shadow: var(--shadow);
++}
++.stat span {
++  display: block;
++  font-size: 0.72rem;
++  opacity: 0.82;
++}
++.stat strong {
++  font-family: var(--mono);
++  font-size: 0.95rem;
++  font-weight: 700;
++}
++
++.sidebar-actions {
++  display: grid;
++  grid-template-columns: 1.4fr 1fr 1fr;
++  gap: 8px;
++}
++.sidebar-actions #btnPasteItinerary {
++  grid-column: 1 / -1;
++}
++
++.btn {
++  appearance: none;
++  border: 1px solid var(--line);
++  background: #fff;
++  color: var(--ink);
++  border-radius: 10px;
++  padding: 10px 12px;
++  font: inherit;
++  font-weight: 700;
++  cursor: pointer;
++  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
++}
++.btn:hover { transform: translateY(-1px); }
++.btn.primary {
++  background: var(--sea);
++  border-color: transparent;
++  color: #fff;
++}
++.btn.primary:hover { background: var(--sea-bright); }
++.btn.ghost { background: rgba(255,255,255,0.7); }
++.btn.danger {
++  background: transparent;
++  border-color: rgba(196, 60, 60, 0.35);
++  color: var(--danger);
++}
++.btn.compact { padding: 8px 10px; font-size: 0.85rem; white-space: nowrap; }
++
++.stop-list {
++  flex: 1;
++  overflow: auto;
++  display: flex;
++  flex-direction: column;
++  gap: 10px;
++  padding-right: 4px;
++}
++
++.stop-card {
++  border: 1px solid var(--line);
++  background: #fff;
++  border-radius: 12px;
++  padding: 10px 12px;
++  cursor: pointer;
++  transition: border-color 0.15s ease, box-shadow 0.15s ease;
++}
++.stop-card:hover,
++.stop-card.active {
++  border-color: rgba(27, 108, 168, 0.45);
++  box-shadow: 0 8px 24px rgba(27, 108, 168, 0.12);
++}
++.stop-card .top {
++  display: flex;
++  align-items: baseline;
++  gap: 8px;
++}
++.stop-card .idx {
++  font-family: var(--mono);
++  font-size: 0.75rem;
++  color: var(--sea);
++  font-weight: 700;
++}
++.stop-card .name {
++  font-weight: 800;
++  font-size: 0.95rem;
++}
++.stop-card .meta {
++  margin-top: 6px;
++  display: flex;
++  flex-wrap: wrap;
++  gap: 6px 10px;
++  font-size: 0.78rem;
++  color: var(--ink-soft);
++}
++.stop-card .meta b { color: var(--ink); font-weight: 700; }
++.stop-card .thumbs {
++  margin-top: 8px;
++  display: flex;
++  gap: 6px;
++  overflow: auto;
++}
++.stop-card .thumbs img {
++  width: 44px;
++  height: 44px;
++  object-fit: cover;
++  border-radius: 6px;
++  border: 1px solid var(--line);
++}
++
++.segment-chip {
++  align-self: center;
++  font-size: 0.72rem;
++  color: var(--sea);
++  background: var(--foam);
++  border-radius: 999px;
++  padding: 4px 10px;
++  font-family: var(--mono);
++}
++
++.sidebar-foot {
++  display: grid;
++  grid-template-columns: 1fr 1fr;
++  gap: 8px;
++}
++.sidebar-foot .hint {
++  grid-column: 1 / -1;
++  margin: 4px 0 0;
++  font-size: 0.75rem;
++  color: var(--ink-soft);
++  line-height: 1.45;
++}
++
++.map-pane {
++  position: relative;
++  min-width: 0;
++}
++#map {
++  width: 100%;
++  height: 100%;
++  min-height: 100dvh;
++  background: #c9dde8;
++}
++
++.map-stats {
++  position: absolute;
++  top: 16px;
++  left: 16px;
++  z-index: 400;
++  background: linear-gradient(160deg, rgba(18, 52, 74, 0.92), rgba(27, 108, 168, 0.88));
++  color: #fff;
++  border-radius: 12px;
++  padding: 12px 14px;
++  min-width: 210px;
++  box-shadow: var(--shadow);
++  display: grid;
++  gap: 6px;
++  backdrop-filter: blur(8px);
++}
++.map-stats span {
++  display: block;
++  font-size: 0.7rem;
++  opacity: 0.8;
++}
++.map-stats b {
++  font-family: var(--mono);
++  font-size: 0.92rem;
++  font-weight: 700;
++}
++
++.fab-toggle {
++  display: none;
++  position: absolute;
++  top: 14px;
++  right: 14px;
++  z-index: 500;
++  width: 44px;
++  height: 44px;
++  border: 0;
++  border-radius: 12px;
++  background: #fff;
++  box-shadow: var(--shadow);
++  font-size: 1.1rem;
++  cursor: pointer;
++}
++
++.marker-pin {
++  width: 28px;
++  height: 28px;
++  border-radius: 50% 50% 50% 0;
++  transform: rotate(-45deg);
++  background: var(--sea);
++  border: 2px solid #fff;
++  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
++  display: grid;
++  place-items: center;
++}
++.marker-pin span {
++  transform: rotate(45deg);
++  color: #fff;
++  font-size: 11px;
++  font-weight: 800;
++  font-family: var(--mono);
++}
++.marker-pin.start { background: #1f7a4c; }
++.marker-pin.end { background: #b45309; }
++
++.leaflet-popup-content-wrapper {
++  border-radius: 12px;
++  box-shadow: var(--shadow);
++}
++.popup-card h3 {
++  margin: 0 0 6px;
++  font-size: 1rem;
++}
++.popup-card p {
++  margin: 0 0 4px;
++  font-size: 0.82rem;
++  color: #334;
++}
++.popup-card .photos {
++  display: flex;
++  gap: 6px;
++  margin-top: 8px;
++  overflow: auto;
++  max-width: 220px;
++}
++.popup-card .photos img {
++  width: 64px;
++  height: 48px;
++  object-fit: cover;
++  border-radius: 6px;
++}
++.popup-card button {
++  margin-top: 8px;
++}
++
++.modal {
++  border: 0;
++  padding: 0;
++  background: transparent;
++  max-width: calc(100vw - 24px);
++}
++.modal::backdrop {
++  background: rgba(10, 20, 28, 0.45);
++  backdrop-filter: blur(3px);
++}
++.modal-card {
++  width: min(480px, 100%);
++  background: #fff;
++  border-radius: 16px;
++  padding: 18px;
++  box-shadow: var(--shadow);
++  display: grid;
++  gap: 10px;
++}
++.modal-card h2 {
++  margin: 0 0 4px;
++  font-size: 1.15rem;
++}
++.modal-card label {
++  display: grid;
++  gap: 6px;
++  font-size: 0.82rem;
++  font-weight: 700;
++  color: var(--ink-soft);
++}
++.modal-card input[type="text"],
++.modal-card input[type="time"],
++.modal-card input[type="number"],
++.modal-card input:not([type]) {
++  width: 100%;
++  border: 1px solid var(--line);
++  border-radius: 10px;
++  padding: 10px 12px;
++  font: inherit;
++  color: var(--ink);
++  background: #fbfcfd;
++}
++.modal-card textarea {
++  width: 100%;
++  border: 1px solid var(--line);
++  border-radius: 10px;
++  padding: 10px 12px;
++  font: inherit;
++  color: var(--ink);
++  background: #fbfcfd;
++  resize: vertical;
++  line-height: 1.45;
++}
++.modal-hint {
++  margin: 0;
++  font-size: 0.82rem;
++  color: var(--ink-soft);
++  line-height: 1.5;
++  font-weight: 400;
++}
++.modal-hint code {
++  font-family: var(--mono);
++  font-size: 0.75rem;
++  background: var(--foam);
++  padding: 1px 6px;
++  border-radius: 4px;
++}
++.check {
++  display: flex !important;
++  align-items: center;
++  gap: 8px;
++  font-weight: 600 !important;
++  grid-template-columns: none !important;
++}
++.check input { width: auto; }
++.row.two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
++.modal-actions {
++  display: flex;
++  align-items: center;
++  gap: 8px;
++  margin-top: 6px;
++}
++.spacer { flex: 1; }
++
++.photo-block {
++  border: 1px dashed var(--line);
++  border-radius: 12px;
++  padding: 10px;
++}
++.photo-head {
++  display: flex;
++  justify-content: space-between;
++  align-items: center;
++  margin-bottom: 8px;
++  font-weight: 700;
++  font-size: 0.85rem;
++}
++.photo-grid {
++  display: grid;
++  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
++  gap: 8px;
++}
++.photo-grid .shot {
++  position: relative;
++  aspect-ratio: 1;
++  border-radius: 8px;
++  overflow: hidden;
++  border: 1px solid var(--line);
++}
++.photo-grid img {
++  width: 100%;
++  height: 100%;
++  object-fit: cover;
++}
++.photo-grid .shot button {
++  position: absolute;
++  top: 4px;
++  right: 4px;
++  border: 0;
++  background: rgba(0,0,0,0.55);
++  color: #fff;
++  width: 22px;
++  height: 22px;
++  border-radius: 50%;
++  cursor: pointer;
++  font-size: 12px;
++}
++
++.toast {
++  position: fixed;
++  bottom: 20px;
++  left: 50%;
++  transform: translateX(-50%);
++  background: var(--ink);
++  color: #fff;
++  padding: 10px 16px;
++  border-radius: 999px;
++  font-size: 0.85rem;
++  z-index: 1000;
++  animation: fade 2.4s ease forwards;
++}
++@keyframes fade {
++  0%, 70% { opacity: 1; }
++  100% { opacity: 0; }
++}
++
++@media (max-width: 860px) {
++  .app { grid-template-columns: 1fr; }
++  .sidebar {
++    position: absolute;
++    inset: 0 auto 0 0;
++    width: var(--sidebar-w);
++    transform: translateX(-105%);
++    transition: transform 0.25s ease;
++    box-shadow: var(--shadow);
++  }
++  .sidebar.open { transform: translateX(0); }
++  .fab-toggle { display: grid; place-items: center; }
++  .map-stats { right: 66px; left: 12px; min-width: 0; }
++  .sidebar-actions { grid-template-columns: 1fr 1fr; }
++  .sidebar-actions #btnAddStop,
++  .sidebar-actions #btnPasteItinerary { grid-column: 1 / -1; }
++}
+diff --git a/web/trip-tool/data/sample-trip.json b/web/trip-tool/data/sample-trip.json
+new file mode 100644
+index 0000000..2fa3468
+--- /dev/null
++++ b/web/trip-tool/data/sample-trip.json
+@@ -0,0 +1,127 @@
++{
++  "title": "丞恩很久沒環島",
++  "date": "2026-07-26",
++  "vehicle": "motorcycle",
++  "stops": [
++    {
++      "id": "s1",
++      "name": "台北出發",
++      "address": "台北市",
++      "lat": 25.0478,
++      "lng": 121.5319,
++      "arrive": "05:00",
++      "leave": "05:00",
++      "note": "出發"
++    },
++    {
++      "id": "s2",
++      "name": "北宜坪林7-11",
++      "address": "新北市坪林區",
++      "lat": 24.9356,
++      "lng": 121.7112,
++      "arrive": "06:00",
++      "leave": "06:20",
++      "note": "休息 20 分鐘"
++    },
++    {
++      "id": "s3",
++      "name": "宜蘭蘇澳南聖湖加油站",
++      "address": "宜蘭縣蘇澳鎮南聖湖",
++      "lat": 24.5945,
++      "lng": 121.8518,
++      "arrive": "07:24",
++      "leave": "07:42",
++      "note": "休息 18 分鐘"
++    },
++    {
++      "id": "s4",
++      "name": "花蓮崇德盈7-11",
++      "address": "花蓮縣秀林鄉崇德",
++      "lat": 24.1684,
++      "lng": 121.6535,
++      "arrive": "08:51",
++      "leave": "09:22",
++      "note": "休息 31 分鐘"
++    },
++    {
++      "id": "s5",
++      "name": "花蓮台11靜浦 北回歸線",
++      "address": "花蓮縣豐濱鄉靜浦北回歸線",
++      "lat": 23.4533,
++      "lng": 121.3734,
++      "arrive": "10:55",
++      "leave": "11:15",
++      "note": "休息 20 分鐘"
++    },
++    {
++      "id": "s6",
++      "name": "台東葉氏海鮮",
++      "address": "台東市葉氏海鮮",
++      "lat": 22.7552,
++      "lng": 121.1448,
++      "arrive": "11:36",
++      "leave": "13:37",
++      "note": "午餐 61 分鐘"
++    },
++    {
++      "id": "s7",
++      "name": "台東三越7-11",
++      "address": "台東市三越",
++      "lat": 22.7518,
++      "lng": 121.1465,
++      "arrive": "13:39",
++      "leave": "14:06",
++      "note": "休息 27 分鐘"
++    },
++    {
++      "id": "s8",
++      "name": "屏東枋山 北基楓港加油站",
++      "address": "屏東縣枋山鄉楓港",
++      "lat": 22.1588,
++      "lng": 120.6825,
++      "arrive": "15:29",
++      "leave": "15:49",
++      "note": "休息 20 分鐘"
++    },
++    {
++      "id": "s9",
++      "name": "屏東內埔 涼山7-11",
++      "address": "屏東縣內埔鄉涼山",
++      "lat": 22.6448,
++      "lng": 120.5689,
++      "arrive": "16:50",
++      "leave": "17:20",
++      "note": "休息 30 分鐘"
++    },
++    {
++      "id": "s10",
++      "name": "台南玉井走馬瀨加油站",
++      "address": "台南市玉井區走馬瀨",
++      "lat": 23.1245,
++      "lng": 120.4608,
++      "arrive": "18:36",
++      "leave": "19:13",
++      "note": "休息 37 分鐘"
++    },
++    {
++      "id": "s11",
++      "name": "苗栗通宵落日大道",
++      "address": "苗栗縣通宵鎮落日大道",
++      "lat": 24.4912,
++      "lng": 120.6774,
++      "arrive": "21:14",
++      "leave": "21:53",
++      "note": "休息 39 分鐘"
++    },
++    {
++      "id": "s12",
++      "name": "到台北",
++      "address": "台北市",
++      "lat": 25.0478,
++      "lng": 121.5319,
++      "arrive": "23:21",
++      "leave": "23:21",
++      "note": "抵達"
++    }
++  ]
++}
+diff --git a/web/trip-tool/index.html b/web/trip-tool/index.html
+new file mode 100644
+index 0000000..aff68d6
+--- /dev/null
++++ b/web/trip-tool/index.html
+@@ -0,0 +1,131 @@
++<!DOCTYPE html>
++<html lang="zh-Hant">
++<head>
++  <meta charset="UTF-8" />
++  <meta name="viewport" content="width=device-width, initial-scale=1" />
++  <title>環島路線工具</title>
++  <link rel="preconnect" href="https://fonts.googleapis.com" />
++  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
++  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
++  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
++  <link rel="stylesheet" href="css/styles.css" />
++</head>
++<body>
++  <div class="app">
++    <aside class="sidebar" id="sidebar">
++      <header class="sidebar-head">
++        <p class="brand"><a class="brand-home" href="../index.html">SEED</a> · 環島路線工具</p>
++        <h1 id="tripTitle">路線紀錄</h1>
++        <p class="sub" id="tripDate">載入中…</p>
++      </header>
++
++      <section class="stats-card" id="statsCard" aria-label="行程統計">
++        <div class="stat"><span>總長</span><strong id="statDistance">—</strong></div>
++        <div class="stat"><span>騎乘</span><strong id="statRide">—</strong></div>
++        <div class="stat"><span>停留</span><strong id="statStay">—</strong></div>
++        <div class="stat"><span>總時</span><strong id="statTotal">—</strong></div>
++      </section>
++
++      <div class="sidebar-actions">
++        <button type="button" class="btn primary" id="btnAddStop">＋ 新增停留點</button>
++        <button type="button" class="btn ghost" id="btnRoute" title="依地址重新規劃路線">規劃路線</button>
++        <button type="button" class="btn ghost" id="btnLoadSample">載入範例</button>
++        <button type="button" class="btn ghost" id="btnPasteItinerary">貼上行程文字</button>
++      </div>
++
++      <div class="stop-list" id="stopList"></div>
++
++      <footer class="sidebar-foot">
++        <button type="button" class="btn ghost" id="btnExport">匯出 JSON</button>
++        <button type="button" class="btn ghost" id="btnImport">匯入</button>
++        <input type="file" id="importFile" accept="application/json" hidden />
++        <p class="hint">點地圖標記可看停留時間、上傳照片。地址可搜尋後自動定位。</p>
++      </footer>
++    </aside>
++
++    <main class="map-pane">
++      <div id="map" role="application" aria-label="台灣地圖"></div>
++
++      <div class="map-stats" id="mapStats">
++        <div><span>總長</span><b id="mapDistance">—</b></div>
++        <div><span>花費時間</span><b id="mapTotal">—</b></div>
++        <div><span>起點時間</span><b id="mapStart">—</b></div>
++        <div><span>終點時間</span><b id="mapEnd">—</b></div>
++      </div>
++
++      <button type="button" class="fab-toggle" id="btnToggleSidebar" aria-label="切換側欄">☰</button>
++    </main>
++  </div>
++
++  <!-- Stop editor modal -->
++  <dialog class="modal" id="stopModal">
++    <form method="dialog" id="stopForm" class="modal-card">
++      <h2 id="modalTitle">編輯停留點</h2>
++      <input type="hidden" id="stopId" />
++
++      <label>名稱
++        <input id="fName" required placeholder="例如：坪林7-11" />
++      </label>
++      <label>地址（可搜尋）
++        <div class="row">
++          <input id="fAddress" placeholder="台灣地址或地標" />
++          <button type="button" class="btn primary compact" id="btnGeocode">定位</button>
++        </div>
++      </label>
++      <div class="row two">
++        <label>緯度 <input id="fLat" type="number" step="any" required /></label>
++        <label>經度 <input id="fLng" type="number" step="any" required /></label>
++      </div>
++      <div class="row two">
++        <label>抵達 <input id="fArrive" type="time" required /></label>
++        <label>離開 <input id="fLeave" type="time" required /></label>
++      </div>
++      <label>備註 <input id="fNote" placeholder="可選" /></label>
++
++      <div class="photo-block">
++        <div class="photo-head">
++          <span>照片</span>
++          <label class="btn ghost compact">上傳照片
++            <input type="file" id="fPhotos" accept="image/*" multiple hidden />
++          </label>
++        </div>
++        <div class="photo-grid" id="photoGrid"></div>
++      </div>
++
++      <div class="modal-actions">
++        <button type="button" class="btn danger" id="btnDeleteStop">刪除</button>
++        <div class="spacer"></div>
++        <button type="button" class="btn ghost" id="btnCancelStop" value="cancel">取消</button>
++        <button type="submit" class="btn primary" id="btnSaveStop">儲存</button>
++      </div>
++    </form>
++  </dialog>
++
++  <!-- Bulk itinerary paste -->
++  <dialog class="modal" id="pasteModal">
++    <form method="dialog" id="pasteForm" class="modal-card">
++      <h2>貼上行程文字</h2>
++      <p class="modal-hint">每行一筆，支援例如：<br />
++        <code>05:00 台北出發</code><br />
++        <code>06:00-06:20 北宜坪林7-11 (20分鐘)</code><br />
++        <code>23:21 到台北</code>
++      </p>
++      <label>行程
++        <textarea id="fPaste" rows="12" placeholder="貼上你的行程…"></textarea>
++      </label>
++      <label class="check">
++        <input type="checkbox" id="fGeocodeAll" checked />
++        自動依名稱搜尋台灣地圖座標（需網路，較慢）
++      </label>
++      <div class="modal-actions">
++        <div class="spacer"></div>
++        <button type="button" class="btn ghost" id="btnCancelPaste">取消</button>
++        <button type="submit" class="btn primary">建立停留點</button>
++      </div>
++    </form>
++  </dialog>
++
++  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
++  <script src="js/app.js" type="module"></script>
++</body>
++</html>
+diff --git a/web/trip-tool/js/app.js b/web/trip-tool/js/app.js
+new file mode 100644
+index 0000000..1ac33fe
+--- /dev/null
++++ b/web/trip-tool/js/app.js
+@@ -0,0 +1,729 @@
++/**
++ * 環島路線工具
++ * - Leaflet 地圖標註停留點
++ * - OSRM 規劃機車／汽車路線
++ * - Nominatim 地址定位
++ * - 計算停留時間、點到點時間
++ * - 各點可上傳照片（存在 localStorage，縮圖 base64）
++ */
++
++const STORAGE_KEY = "trip-tool-v1";
++const OSRM_URL = "https://router.project-osrm.org/route/v1/driving";
++const NOMINATIM_URL = "https://nominatim.openstreetmap.org/search";
++
++/** @typedef {{ id: string, name: string, address: string, lat: number, lng: number, arrive: string, leave: string, note?: string, photos?: string[] }} Stop */
++/** @typedef {{ title: string, date: string, stops: Stop[], route?: { coords: [number, number][], distanceM: number, durationS: number } | null }} Trip */
++
++/** @type {Trip} */
++let trip = {
++  title: "環島路線",
++  date: new Date().toISOString().slice(0, 10),
++  stops: [],
++  route: null,
++};
++
++/** @type {string | null} */
++let editingId = null;
++/** @type {string[]} */
++let draftPhotos = [];
++/** @type {L.Map} */
++let map;
++/** @type {L.LayerGroup} */
++let markerLayer;
++/** @type {L.Polyline | null} */
++let routeLine = null;
++/** @type {Map<string, L.Marker>} */
++const markerById = new Map();
++
++const $ = (id) => document.getElementById(id);
++
++function uid() {
++  return `s${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
++}
++
++function parseHM(hm) {
++  const [h, m] = hm.split(":").map(Number);
++  return h * 60 + m;
++}
++
++function formatMinutes(mins) {
++  if (mins == null || Number.isNaN(mins)) return "—";
++  const sign = mins < 0 ? "-" : "";
++  const abs = Math.abs(Math.round(mins));
++  const h = Math.floor(abs / 60);
++  const m = abs % 60;
++  if (h === 0) return `${sign}${m} 分`;
++  return `${sign}${h} 時 ${m} 分`;
++}
++
++function formatDurationSeconds(sec) {
++  if (sec == null) return "—";
++  return formatMinutes(sec / 60);
++}
++
++function formatKm(meters) {
++  if (meters == null) return "—";
++  return `${(meters / 1000).toFixed(1)} km`;
++}
++
++function stayMinutes(stop) {
++  return Math.max(0, parseHM(stop.leave) - parseHM(stop.arrive));
++}
++
++function travelMinutesBetween(a, b) {
++  // Prefer scheduled gap leave→arrive; fallback to OSRM later in UI
++  return parseHM(b.arrive) - parseHM(a.leave);
++}
++
++function toast(msg) {
++  const el = document.createElement("div");
++  el.className = "toast";
++  el.textContent = msg;
++  document.body.appendChild(el);
++  setTimeout(() => el.remove(), 2400);
++}
++
++function saveLocal() {
++  try {
++    localStorage.setItem(STORAGE_KEY, JSON.stringify(trip));
++  } catch (err) {
++    console.warn("localStorage full or blocked", err);
++    toast("本機儲存空間不足（照片可能太多）");
++  }
++}
++
++function loadLocal() {
++  const raw = localStorage.getItem(STORAGE_KEY);
++  if (!raw) return null;
++  try {
++    return JSON.parse(raw);
++  } catch {
++    return null;
++  }
++}
++
++function totalStayMinutes() {
++  return trip.stops.reduce((sum, s) => sum + stayMinutes(s), 0);
++}
++
++function totalScheduledTravelMinutes() {
++  let sum = 0;
++  for (let i = 0; i < trip.stops.length - 1; i++) {
++    sum += Math.max(0, travelMinutesBetween(trip.stops[i], trip.stops[i + 1]));
++  }
++  return sum;
++}
++
++function tripSpanMinutes() {
++  if (trip.stops.length === 0) return 0;
++  const first = trip.stops[0];
++  const last = trip.stops[trip.stops.length - 1];
++  return Math.max(0, parseHM(last.arrive) - parseHM(first.leave || first.arrive));
++}
++
++function updateStats() {
++  const stay = totalStayMinutes();
++  const rideSched = totalScheduledTravelMinutes();
++  const total = tripSpanMinutes() || stay + rideSched;
++  const dist = trip.route?.distanceM ?? null;
++  const rideOsrm = trip.route?.durationS != null ? trip.route.durationS / 60 : null;
++
++  $("statDistance").textContent = formatKm(dist);
++  $("statRide").textContent = formatMinutes(rideOsrm ?? rideSched);
++  $("statStay").textContent = formatMinutes(stay);
++  $("statTotal").textContent = formatMinutes(total);
++
++  $("mapDistance").textContent = formatKm(dist);
++  $("mapTotal").textContent = formatMinutes(total);
++  $("mapStart").textContent = trip.stops[0]
++    ? `${trip.date} ${trip.stops[0].arrive}`
++    : "—";
++  $("mapEnd").textContent = trip.stops.length
++    ? `${trip.date} ${trip.stops[trip.stops.length - 1].arrive}`
++    : "—";
++
++  $("tripTitle").textContent = trip.title || "路線紀錄";
++  $("tripDate").textContent = trip.date || "";
++}
++
++function makePinIcon(index, kind = "mid") {
++  const cls = kind === "start" ? "start" : kind === "end" ? "end" : "";
++  return L.divIcon({
++    className: "",
++    html: `<div class="marker-pin ${cls}"><span>${index}</span></div>`,
++    iconSize: [28, 28],
++    iconAnchor: [14, 28],
++    popupAnchor: [0, -28],
++  });
++}
++
++function popupHtml(stop, index) {
++  const stay = stayMinutes(stop);
++  const prev = index > 0 ? trip.stops[index - 1] : null;
++  const travel = prev ? travelMinutesBetween(prev, stop) : null;
++  const photos = (stop.photos || [])
++    .map((src) => `<img src="${src}" alt="" />`)
++    .join("");
++  return `
++    <div class="popup-card">
++      <h3>${index}. ${escapeHtml(stop.name)}</h3>
++      <p>${escapeHtml(stop.address || "")}</p>
++      <p>抵達 <b>${stop.arrive}</b>　離開 <b>${stop.leave}</b></p>
++      <p>停留 <b>${formatMinutes(stay)}</b>${
++        travel != null ? `　上一段騎乘 <b>${formatMinutes(Math.max(0, travel))}</b>` : ""
++      }</p>
++      ${stop.note ? `<p>${escapeHtml(stop.note)}</p>` : ""}
++      ${photos ? `<div class="photos">${photos}</div>` : ""}
++      <button type="button" class="btn primary compact" data-edit="${stop.id}">編輯／上傳照片</button>
++    </div>
++  `;
++}
++
++function escapeHtml(str) {
++  return String(str)
++    .replaceAll("&", "&amp;")
++    .replaceAll("<", "&lt;")
++    .replaceAll(">", "&gt;")
++    .replaceAll('"', "&quot;");
++}
++
++function renderMarkers() {
++  markerLayer.clearLayers();
++  markerById.clear();
++  const n = trip.stops.length;
++  trip.stops.forEach((stop, i) => {
++    const kind = i === 0 ? "start" : i === n - 1 ? "end" : "mid";
++    const marker = L.marker([stop.lat, stop.lng], {
++      icon: makePinIcon(i + 1, kind),
++      draggable: true,
++      title: stop.name,
++    });
++    marker.bindPopup(() => popupHtml(stop, i + 1));
++    marker.on("popupopen", (e) => {
++      const btn = e.popup.getElement()?.querySelector("[data-edit]");
++      btn?.addEventListener("click", () => openEditor(stop.id));
++    });
++    marker.on("dragend", () => {
++      const ll = marker.getLatLng();
++      stop.lat = +ll.lat.toFixed(6);
++      stop.lng = +ll.lng.toFixed(6);
++      saveLocal();
++      renderStopList();
++      toast("已更新座標，可再按「規劃路線」");
++    });
++    marker.on("click", () => highlightStop(stop.id));
++    marker.addTo(markerLayer);
++    markerById.set(stop.id, marker);
++  });
++}
++
++function renderRoute() {
++  if (routeLine) {
++    map.removeLayer(routeLine);
++    routeLine = null;
++  }
++  if (trip.route?.coords?.length) {
++    routeLine = L.polyline(trip.route.coords, {
++      color: "#1b6ca8",
++      weight: 5,
++      opacity: 0.9,
++      lineJoin: "round",
++    }).addTo(map);
++  }
++}
++
++function fitMap() {
++  const pts = trip.stops.map((s) => [s.lat, s.lng]);
++  if (trip.route?.coords?.length) {
++    map.fitBounds(L.latLngBounds(trip.route.coords), { padding: [40, 40] });
++  } else if (pts.length >= 2) {
++    map.fitBounds(pts, { padding: [50, 50] });
++  } else if (pts.length === 1) {
++    map.setView(pts[0], 11);
++  } else {
++    map.setView([23.7, 121], 7);
++  }
++}
++
++function renderStopList() {
++  const list = $("stopList");
++  list.innerHTML = "";
++  trip.stops.forEach((stop, i) => {
++    if (i > 0) {
++      const prev = trip.stops[i - 1];
++      const travel = Math.max(0, travelMinutesBetween(prev, stop));
++      const chip = document.createElement("div");
++      chip.className = "segment-chip";
++      chip.textContent = `騎乘 ${formatMinutes(travel)} →`;
++      list.appendChild(chip);
++    }
++
++    const card = document.createElement("article");
++    card.className = "stop-card";
++    card.dataset.id = stop.id;
++    const stay = stayMinutes(stop);
++    const thumbs = (stop.photos || [])
++      .slice(0, 4)
++      .map((src) => `<img src="${src}" alt="" />`)
++      .join("");
++    card.innerHTML = `
++      <div class="top">
++        <span class="idx">#${i + 1}</span>
++        <span class="name">${escapeHtml(stop.name)}</span>
++      </div>
++      <div class="meta">
++        <span>${stop.arrive}–${stop.leave}</span>
++        <span>停留 <b>${formatMinutes(stay)}</b></span>
++        ${stop.address ? `<span>${escapeHtml(stop.address)}</span>` : ""}
++      </div>
++      ${thumbs ? `<div class="thumbs">${thumbs}</div>` : ""}
++    `;
++    card.addEventListener("click", () => {
++      highlightStop(stop.id);
++      const m = markerById.get(stop.id);
++      if (m) {
++        map.panTo(m.getLatLng());
++        m.openPopup();
++      }
++      openEditor(stop.id);
++    });
++    list.appendChild(card);
++  });
++}
++
++function highlightStop(id) {
++  document.querySelectorAll(".stop-card").forEach((el) => {
++    el.classList.toggle("active", el.dataset.id === id);
++  });
++}
++
++function refreshAll() {
++  renderStopList();
++  renderMarkers();
++  renderRoute();
++  updateStats();
++  saveLocal();
++}
++
++async function fetchRoute() {
++  if (trip.stops.length < 2) {
++    trip.route = null;
++    refreshAll();
++    toast("至少需要 2 個停留點");
++    return;
++  }
++
++  const path = trip.stops.map((s) => `${s.lng},${s.lat}`).join(";");
++  const url = `${OSRM_URL}/${path}?overview=full&geometries=geojson`;
++  $("btnRoute").disabled = true;
++  $("btnRoute").textContent = "規劃中…";
++  try {
++    const res = await fetch(url);
++    if (!res.ok) throw new Error(`OSRM ${res.status}`);
++    const data = await res.json();
++    if (data.code !== "Ok" || !data.routes?.[0]) throw new Error(data.message || "無路線");
++    const route = data.routes[0];
++    const coords = route.geometry.coordinates.map(([lng, lat]) => [lat, lng]);
++    trip.route = {
++      coords,
++      distanceM: route.distance,
++      durationS: route.duration,
++    };
++    refreshAll();
++    fitMap();
++    toast(`路線完成：${formatKm(route.distance)}`);
++  } catch (err) {
++    console.error(err);
++    // Fallback: straight segments
++    const coords = trip.stops.map((s) => [s.lat, s.lng]);
++    let distanceM = 0;
++    for (let i = 0; i < coords.length - 1; i++) {
++      distanceM += map.distance(coords[i], coords[i + 1]);
++    }
++    trip.route = { coords, distanceM, durationS: null };
++    refreshAll();
++    fitMap();
++    toast("路線服務暫時不可用，已改畫直線連線");
++  } finally {
++    $("btnRoute").disabled = false;
++    $("btnRoute").textContent = "規劃路線";
++  }
++}
++
++async function geocode(query) {
++  const q = query.trim();
++  if (!q) throw new Error("請輸入地址");
++  const params = new URLSearchParams({
++    q: q.includes("台灣") || q.includes("臺灣") || q.toLowerCase().includes("taiwan")
++      ? q
++      : `${q}, 台灣`,
++    format: "json",
++    limit: "1",
++    countrycodes: "tw",
++  });
++  const res = await fetch(`${NOMINATIM_URL}?${params}`, {
++    headers: { Accept: "application/json" },
++  });
++  if (!res.ok) throw new Error("定位失敗");
++  const data = await res.json();
++  if (!data.length) throw new Error("找不到此地點");
++  return {
++    lat: parseFloat(data[0].lat),
++    lng: parseFloat(data[0].lon),
++    display: data[0].display_name,
++  };
++}
++
++function openEditor(id = null) {
++  editingId = id;
++  const modal = $("stopModal");
++  const stop = id ? trip.stops.find((s) => s.id === id) : null;
++  $("modalTitle").textContent = stop ? "編輯停留點" : "新增停留點";
++  $("stopId").value = stop?.id || "";
++  $("fName").value = stop?.name || "";
++  $("fAddress").value = stop?.address || "";
++  $("fLat").value = stop?.lat ?? "";
++  $("fLng").value = stop?.lng ?? "";
++  $("fArrive").value = stop?.arrive || "12:00";
++  $("fLeave").value = stop?.leave || "12:20";
++  $("fNote").value = stop?.note || "";
++  draftPhotos = [...(stop?.photos || [])];
++  renderPhotoGrid();
++  $("btnDeleteStop").style.display = stop ? "inline-flex" : "none";
++  modal.showModal();
++}
++
++function renderPhotoGrid() {
++  const grid = $("photoGrid");
++  grid.innerHTML = "";
++  draftPhotos.forEach((src, i) => {
++    const div = document.createElement("div");
++    div.className = "shot";
++    div.innerHTML = `<img src="${src}" alt="" /><button type="button" aria-label="移除">×</button>`;
++    div.querySelector("button").addEventListener("click", () => {
++      draftPhotos.splice(i, 1);
++      renderPhotoGrid();
++    });
++    grid.appendChild(div);
++  });
++}
++
++function readFilesAsDataUrls(fileList, maxW = 960, quality = 0.72) {
++  return Promise.all(
++    [...fileList].map(
++      (file) =>
++        new Promise((resolve, reject) => {
++          const img = new Image();
++          const url = URL.createObjectURL(file);
++          img.onload = () => {
++            const scale = Math.min(1, maxW / img.width);
++            const w = Math.round(img.width * scale);
++            const h = Math.round(img.height * scale);
++            const canvas = document.createElement("canvas");
++            canvas.width = w;
++            canvas.height = h;
++            const ctx = canvas.getContext("2d");
++            ctx.drawImage(img, 0, 0, w, h);
++            URL.revokeObjectURL(url);
++            resolve(canvas.toDataURL("image/jpeg", quality));
++          };
++          img.onerror = reject;
++          img.src = url;
++        })
++    )
++  );
++}
++
++function saveStopFromForm(ev) {
++  ev.preventDefault();
++  const id = $("stopId").value || uid();
++  const payload = {
++    id,
++    name: $("fName").value.trim(),
++    address: $("fAddress").value.trim(),
++    lat: parseFloat($("fLat").value),
++    lng: parseFloat($("fLng").value),
++    arrive: $("fArrive").value,
++    leave: $("fLeave").value,
++    note: $("fNote").value.trim(),
++    photos: draftPhotos,
++  };
++  if (Number.isNaN(payload.lat) || Number.isNaN(payload.lng)) {
++    toast("請先定位或填入座標");
++    return;
++  }
++  const idx = trip.stops.findIndex((s) => s.id === id);
++  if (idx >= 0) trip.stops[idx] = payload;
++  else trip.stops.push(payload);
++  // Keep chronological by arrive time
++  trip.stops.sort((a, b) => parseHM(a.arrive) - parseHM(b.arrive));
++  $("stopModal").close();
++  refreshAll();
++  toast("已儲存停留點");
++}
++
++function deleteCurrentStop() {
++  const id = $("stopId").value;
++  if (!id) return;
++  if (!confirm("確定刪除此停留點？")) return;
++  trip.stops = trip.stops.filter((s) => s.id !== id);
++  $("stopModal").close();
++  refreshAll();
++}
++
++async function loadSample() {
++  const res = await fetch("data/sample-trip.json");
++  const data = await res.json();
++  trip = {
++    title: data.title,
++    date: data.date,
++    stops: data.stops.map((s) => ({ ...s, photos: s.photos || [] })),
++    route: null,
++  };
++  refreshAll();
++  await fetchRoute();
++}
++
++function exportJson() {
++  const blob = new Blob([JSON.stringify(trip, null, 2)], { type: "application/json" });
++  const a = document.createElement("a");
++  a.href = URL.createObjectURL(blob);
++  a.download = `trip-${trip.date || "export"}.json`;
++  a.click();
++  URL.revokeObjectURL(a.href);
++}
++
++function importJson(file) {
++  const reader = new FileReader();
++  reader.onload = () => {
++    try {
++      const data = JSON.parse(reader.result);
++      if (!Array.isArray(data.stops)) throw new Error("格式錯誤");
++      trip = {
++        title: data.title || "匯入行程",
++        date: data.date || "",
++        stops: data.stops,
++        route: data.route || null,
++      };
++      refreshAll();
++      fitMap();
++      toast("匯入成功");
++    } catch (err) {
++      toast("匯入失敗");
++      console.error(err);
++    }
++  };
++  reader.readAsText(file);
++}
++
++/**
++ * Parse lines like:
++ * 05:00 台北出發
++ * 06:00-06:20 北宜坪林7-11 (20分鐘)
++ * 23:21到台北
++ */
++function parseItineraryText(text) {
++  const lines = text
++    .split(/\r?\n/)
++    .map((l) => l.trim())
++    .filter(Boolean);
++  const stops = [];
++  for (const line of lines) {
++    let m = line.match(
++      /^(\d{1,2}:\d{2})\s*[-–~〜到至]\s*(\d{1,2}:\d{2})\s*(.+?)(?:\s*[（(]\s*\d+\s*分鐘?\s*[）)])?\s*$/
++    );
++    if (m) {
++      let name = m[3].trim().replace(/\s*[（(]\s*\d+\s*分鐘?\s*[）)]\s*$/, "");
++      stops.push({
++        id: uid(),
++        name,
++        address: name,
++        lat: NaN,
++        lng: NaN,
++        arrive: normalizeTime(m[1]),
++        leave: normalizeTime(m[2]),
++        note: "",
++        photos: [],
++      });
++      continue;
++    }
++    m = line.match(/^(\d{1,2}:\d{2})\s*(?:到)?\s*(.+)$/);
++    if (m) {
++      const name = m[2].trim();
++      const t = normalizeTime(m[1]);
++      stops.push({
++        id: uid(),
++        name,
++        address: name,
++        lat: NaN,
++        lng: NaN,
++        arrive: t,
++        leave: t,
++        note: "",
++        photos: [],
++      });
++    }
++  }
++  return stops;
++}
++
++function normalizeTime(t) {
++  const [h, m] = t.split(":").map(Number);
++  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
++}
++
++/** Rough Taiwan fallbacks when geocode fails / skipped */
++const NAME_COORDS = [
++  [/台北|臺北/, 25.0478, 121.5319],
++  [/坪林/, 24.9356, 121.7112],
++  [/蘇澳|南聖湖/, 24.5945, 121.8518],
++  [/崇德/, 24.1684, 121.6535],
++  [/靜浦|北回歸線/, 23.4533, 121.3734],
++  [/葉氏|台東市|臺東市/, 22.7552, 121.1448],
++  [/三越/, 22.7518, 121.1465],
++  [/枋山|楓港/, 22.1588, 120.6825],
++  [/內埔|涼山/, 22.6448, 120.5689],
++  [/玉井|走馬瀨/, 23.1245, 120.4608],
++  [/通宵|落日/, 24.4912, 120.6774],
++  [/高雄/, 22.6273, 120.3014],
++  [/台中|臺中/, 24.1477, 120.6736],
++  [/花蓮/, 23.9871, 121.6012],
++  [/台南|臺南/, 22.9997, 120.227],
++];
++
++function guessCoords(name) {
++  for (const [re, lat, lng] of NAME_COORDS) {
++    if (re.test(name)) return { lat, lng };
++  }
++  return null;
++}
++
++async function applyPastedItinerary(text, doGeocode) {
++  const parsed = parseItineraryText(text);
++  if (!parsed.length) {
++    toast("無法解析行程文字");
++    return;
++  }
++  for (const stop of parsed) {
++    const guess = guessCoords(stop.name);
++    if (guess) {
++      stop.lat = guess.lat;
++      stop.lng = guess.lng;
++    }
++    if (doGeocode) {
++      try {
++        await new Promise((r) => setTimeout(r, 1100)); // Nominatim rate limit
++        const g = await geocode(stop.address || stop.name);
++        stop.lat = g.lat;
++        stop.lng = g.lng;
++        stop.address = g.display;
++      } catch {
++        /* keep guess */
++      }
++    }
++    if (Number.isNaN(stop.lat) || Number.isNaN(stop.lng)) {
++      stop.lat = 23.7;
++      stop.lng = 121;
++    }
++  }
++  trip.stops = parsed;
++  trip.route = null;
++  if (!trip.title) trip.title = "自訂行程";
++  refreshAll();
++  await fetchRoute();
++  toast(`已建立 ${parsed.length} 個停留點`);
++}
++
++function initMap() {
++  map = L.map("map", { zoomControl: true }).setView([23.7, 121], 7);
++  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
++    maxZoom: 19,
++    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
++  }).addTo(map);
++  markerLayer = L.layerGroup().addTo(map);
++
++  // Click map to draft new stop coords
++  map.on("click", (e) => {
++    if ($("stopModal").open) {
++      $("fLat").value = e.latlng.lat.toFixed(6);
++      $("fLng").value = e.latlng.lng.toFixed(6);
++      toast("已填入點擊座標");
++    }
++  });
++}
++
++function bindUi() {
++  $("btnAddStop").addEventListener("click", () => openEditor(null));
++  $("btnRoute").addEventListener("click", () => fetchRoute());
++  $("btnLoadSample").addEventListener("click", () => loadSample());
++  $("btnPasteItinerary").addEventListener("click", () => {
++    $("fPaste").value = "";
++    $("pasteModal").showModal();
++  });
++  $("btnCancelPaste").addEventListener("click", () => $("pasteModal").close());
++  $("pasteForm").addEventListener("submit", async (e) => {
++    e.preventDefault();
++    const text = $("fPaste").value;
++    const doGeocode = $("fGeocodeAll").checked;
++    $("pasteModal").close();
++    toast(doGeocode ? "定位中，請稍候…" : "建立中…");
++    await applyPastedItinerary(text, doGeocode);
++  });
++  $("btnExport").addEventListener("click", exportJson);
++  $("btnImport").addEventListener("click", () => $("importFile").click());
++  $("importFile").addEventListener("change", (e) => {
++    const file = e.target.files?.[0];
++    if (file) importJson(file);
++    e.target.value = "";
++  });
++  $("btnToggleSidebar").addEventListener("click", () => {
++    $("sidebar").classList.toggle("open");
++  });
++  $("stopForm").addEventListener("submit", saveStopFromForm);
++  $("btnCancelStop").addEventListener("click", () => $("stopModal").close());
++  $("btnDeleteStop").addEventListener("click", deleteCurrentStop);
++  $("btnGeocode").addEventListener("click", async () => {
++    try {
++      $("btnGeocode").disabled = true;
++      const result = await geocode($("fAddress").value || $("fName").value);
++      $("fLat").value = result.lat.toFixed(6);
++      $("fLng").value = result.lng.toFixed(6);
++      if (!$("fAddress").value) $("fAddress").value = result.display;
++      toast("定位成功");
++      map.setView([result.lat, result.lng], 14);
++    } catch (err) {
++      toast(err.message || "定位失敗");
++    } finally {
++      $("btnGeocode").disabled = false;
++    }
++  });
++  $("fPhotos").addEventListener("change", async (e) => {
++    const files = e.target.files;
++    if (!files?.length) return;
++    try {
++      const urls = await readFilesAsDataUrls(files);
++      draftPhotos.push(...urls);
++      renderPhotoGrid();
++      toast(`已加入 ${urls.length} 張照片`);
++    } catch (err) {
++      console.error(err);
++      toast("照片讀取失敗");
++    }
++    e.target.value = "";
++  });
++}
++
++async function boot() {
++  initMap();
++  bindUi();
++  const local = loadLocal();
++  if (local?.stops?.length) {
++    trip = local;
++    refreshAll();
++    fitMap();
++  } else {
++    await loadSample();
++  }
++}
++
++boot();
+-- 
+2.43.0
+
+
+From e936f9db11cc40fc8f1c5b30cd287f181b17d15a Mon Sep 17 00:00:00 2001
+From: Cursor Agent <cursoragent@cursor.com>
+Date: Mon, 27 Jul 2026 16:49:46 +0000
+Subject: [PATCH 2/2] Record trip-tool publish in idea.history
+
+---
+ docs/idea.history.md | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/docs/idea.history.md b/docs/idea.history.md
+index 4ebb0f2..b1f85da 100644
+--- a/docs/idea.history.md
++++ b/docs/idea.history.md
+@@ -4,10 +4,16 @@
+ > 這裡放已完成或已取消的構想；進行中的只留在 [`idea.md`](./idea.md)。  
+ > 「現在有沒有這個功能」以 [`03-checklist.md`](./03-checklist.md) 查核為準，不是看本檔。  
+ > 舊檔名：`02-idea-done.md`。  
+-> 更新：2026-07-21
++> 更新：2026-07-27
+ 
+ ---
+ 
++## 2026-07-27 — 環島路線工具＋首頁功能選擇
++
++- 結果：done（已發布）  
++- 來源：對話（行程拼貼 → 地圖路線工具 → 發布到 AI_MD 首頁）  
++- 摘要：新增 `web/trip-tool/`（地圖停留點／路線／停留與騎乘時間／上傳照片）；首頁「功能選擇」多一顆「環島路線工具」；頂部導覽同步加入入口。線上 https://hyi1105.github.io/AI_MD/trip-tool/  
++
+ ## 2026-07-21 — Hello World 首頁
+ 
+ - 結果：done（已發布）  
+-- 
+2.43.0
+
