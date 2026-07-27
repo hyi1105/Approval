@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>環島拼貼預覽模板</title>
+  <style>
+    :root {
+      --cell-w: min(48vw, 420px);
+      --cell-h: calc(var(--cell-w) * 0.78);
+      --banner-bg: #fff;
+      --banner-fg: #111;
+      --banner-border: #111;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", "WenQuanYi Micro Hei", sans-serif;
+      background: #1a1a1a;
+      color: #eee;
+      padding: 24px;
+    }
+    h1 { font-size: 1.1rem; font-weight: 600; margin: 0 0 8px; }
+    p.hint { opacity: 0.75; margin: 0 0 20px; font-size: 0.9rem; }
+    .toolbar {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; align-items: center;
+    }
+    .toolbar label {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #2a2a2a; padding: 8px 12px; border-radius: 6px; cursor: pointer;
+      font-size: 0.85rem;
+    }
+    input[type="file"] { display: none; }
+    button {
+      background: #f5f5f5; color: #111; border: 0; padding: 8px 14px;
+      border-radius: 6px; font-weight: 700; cursor: pointer;
+    }
+    .fields {
+      display: grid; gap: 8px; margin-bottom: 16px; max-width: 720px;
+    }
+    .fields input {
+      width: 100%; padding: 8px 10px; border-radius: 4px; border: 1px solid #444;
+      background: #111; color: #fff; font: inherit;
+    }
+    .collage {
+      position: relative;
+      width: calc(var(--cell-w) * 2);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      background: #000;
+      box-shadow: 0 12px 40px rgba(0,0,0,.45);
+    }
+    .cell {
+      position: relative;
+      width: var(--cell-w);
+      height: var(--cell-h);
+      overflow: hidden;
+      background: #333;
+    }
+    .cell img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .cell .placeholder {
+      width: 100%; height: 100%;
+      display: grid; place-items: center;
+      color: #fff; font-size: 1.4rem; font-weight: 700;
+      background: linear-gradient(145deg, #4a7a9b, #2f4f5f);
+    }
+    .cell:nth-child(2) .placeholder { background: linear-gradient(145deg, #5a8f8f, #355555); }
+    .cell:nth-child(3) .placeholder { background: linear-gradient(145deg, #4a8f6f, #2f5f45); }
+    .cell:nth-child(4) .placeholder { background: linear-gradient(145deg, #a88a45, #6a5530); }
+    .cell:nth-child(5) .placeholder { background: linear-gradient(145deg, #5a5a8f, #303055); }
+    .cell:nth-child(6) .placeholder { background: linear-gradient(145deg, #2a2a45, #111122); }
+    .overlays {
+      position: absolute; left: 0; right: 0; bottom: 14px;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      padding: 0 10px; pointer-events: none;
+    }
+    .banner {
+      background: var(--banner-bg);
+      color: var(--banner-fg);
+      border: 2px solid var(--banner-border);
+      padding: 6px 12px;
+      font-weight: 800;
+      font-size: clamp(11px, 1.7vw, 15px);
+      text-align: center;
+      line-height: 1.25;
+      max-width: 96%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .header {
+      position: absolute;
+      top: 18px; left: 0; right: 0;
+      z-index: 5;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      pointer-events: none;
+    }
+    .header .banner.date { font-size: clamp(14px, 2vw, 20px); }
+    .header .banner.title { font-size: clamp(18px, 2.8vw, 30px); padding: 10px 18px; }
+    .header .banner.sub { font-size: clamp(12px, 1.8vw, 16px); }
+    .names {
+      position: absolute; inset: 0; pointer-events: none;
+    }
+    .name-tag {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      background: #fff; color: #111; border: 2px solid #111;
+      padding: 2px 8px; font-weight: 800; font-size: 12px;
+    }
+    .wrap { overflow: auto; padding-bottom: 40px; }
+  </style>
+</head>
+<body>
+  <h1>環島拼貼 HTML 預覽模板</h1>
+  <p class="hint">選圖後可即時預覽；要用高品質輸出請跑 <code>python make_collage.py</code>。</p>
+
+  <div class="fields">
+    <input id="date" value="2026/07/26" />
+    <input id="title" value="丞恩很久沒環島 18.5 小時" />
+    <input id="subtitle" value="總共 18.5 小時 = 騎乘 14 小時 + 休息 4.5 小時" />
+  </div>
+
+  <div class="toolbar" id="pickers"></div>
+  <button type="button" id="syncText">套用上方標題</button>
+
+  <div class="wrap" style="margin-top:16px">
+    <div class="collage" id="collage">
+      <div class="header">
+        <div class="banner date" id="hDate"></div>
+        <div class="banner title" id="hTitle"></div>
+        <div class="banner sub" id="hSub"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const PANELS = [
+      {
+        lines: ["05:00 台北出發", "06:00-06:20 北宜坪林7-11 (20分鐘)"],
+        labels: [
+          { text: "小黃", x: 18, y: 42 },
+          { text: "丞恩", x: 38, y: 38 },
+          { text: "光耀", x: 58, y: 40 },
+          { text: "鳥哥", x: 78, y: 42 },
+        ],
+      },
+      { lines: ["07:24-07:42 宜蘭蘇澳南聖湖加油站 (18分鐘)", "08:51-09:22 花蓮崇德盈7-11 (31分鐘)"] },
+      { lines: ["10:55-11:15 花蓮台11靜浦 北回歸線 (20分鐘)", "11:36-13:37 台東葉氏海鮮吃午餐 (61分鐘)"] },
+      { lines: ["13:39-14:06 台東三越7-11 (27分鐘)", "15:29-15:49 屏東枋山 北基楓港加油站 (20分鐘)"] },
+      { lines: ["16:50-17:20 屏東內埔 涼山7-11 (30分鐘)", "18:36-19:13 台南玉井走馬瀨加油站 (37分鐘)"] },
+      { lines: ["21:14-21:53 苗栗通宵落日大道 (39分鐘)", "23:21 到台北"] },
+    ];
+
+    const collage = document.getElementById("collage");
+    const pickers = document.getElementById("pickers");
+
+    function syncHeader() {
+      hDate.textContent = date.value;
+      hTitle.textContent = title.value;
+      hSub.textContent = subtitle.value;
+    }
+
+    PANELS.forEach((panel, i) => {
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      cell.innerHTML = `<div class="placeholder">照片 ${String(i + 1).padStart(2, "0")}</div>
+        <div class="names"></div>
+        <div class="overlays"></div>`;
+      const overlays = cell.querySelector(".overlays");
+      panel.lines.forEach((line) => {
+        const b = document.createElement("div");
+        b.className = "banner";
+        b.textContent = line;
+        overlays.appendChild(b);
+      });
+      if (panel.labels) {
+        const names = cell.querySelector(".names");
+        panel.labels.forEach((lb) => {
+          const tag = document.createElement("div");
+          tag.className = "name-tag";
+          tag.textContent = lb.text;
+          tag.style.left = lb.x + "%";
+          tag.style.top = lb.y + "%";
+          names.appendChild(tag);
+        });
+      }
+      collage.appendChild(cell);
+
+      const label = document.createElement("label");
+      label.innerHTML = `選圖 ${i + 1}<input type="file" accept="image/*" data-i="${i}" />`;
+      pickers.appendChild(label);
+      label.querySelector("input").addEventListener("change", (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const url = URL.createObjectURL(file);
+        let img = cell.querySelector("img");
+        if (!img) {
+          img = document.createElement("img");
+          cell.querySelector(".placeholder")?.remove();
+          cell.prepend(img);
+        }
+        img.src = url;
+      });
+    });
+
+    syncHeader();
+    document.getElementById("syncText").addEventListener("click", syncHeader);
+    ["date", "title", "subtitle"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", syncHeader);
+    });
+  </script>
+</body>
+</html>

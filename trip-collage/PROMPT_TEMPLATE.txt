@@ -1,0 +1,44 @@
+Make a vertical photo collage of a Taiwan motorcycle round-island trip.
+
+LAYOUT
+- Tight 3 rows × 2 columns photo grid
+- No gaps / gutters between photos
+- Overall portrait collage
+
+HEADER (centered, overlaid on top of the first photo row)
+Three stacked white rectangular banners with thin black borders and bold black Chinese sans-serif text:
+1) Date: {{DATE}}
+2) Large title: {{TITLE}}
+3) Smaller subtitle: {{SUBTITLE}}
+
+EACH PHOTO PANEL
+- Photorealistic photo filling the cell (cover/crop)
+- Bottom: 1–2 white banners with thin black borders, bold black itinerary text
+- Optional on photo 1 only: small white name tags over people (小黃 / 丞恩 / 光耀 / 鳥哥)
+
+PANEL TEXT (use exactly)
+1 TL:
+{{LINE_1A}}
+{{LINE_1B}}
+2 TR:
+{{LINE_2A}}
+{{LINE_2B}}
+3 ML:
+{{LINE_3A}}
+{{LINE_3B}}
+4 MR:
+{{LINE_4A}}
+{{LINE_4B}}
+5 BL:
+{{LINE_5A}}
+{{LINE_5B}}
+6 BR:
+{{LINE_6A}}
+{{LINE_6B}}
+
+STYLE
+- High-contrast white label boxes on photos
+- Chronological: morning daylight → dusk → night
+- Photorealistic collage using the 6 provided photos
+- Do NOT invent extra badges, stickers, or stats
+- Keep Chinese text exact; do not translate or paraphrase

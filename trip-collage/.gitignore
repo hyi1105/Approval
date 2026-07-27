@@ -1,0 +1,10 @@
+photos/*.jpg
+photos/*.jpeg
+photos/*.png
+photos/*.webp
+!photos/README.txt
+output/*
+!output/.gitkeep
+__pycache__/
+*.pyc
+.DS_Store
