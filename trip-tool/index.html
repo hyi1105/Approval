@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>環島路線工具</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <header class="sidebar-head">
+        <p class="brand">環島路線工具</p>
+        <h1 id="tripTitle">路線紀錄</h1>
+        <p class="sub" id="tripDate">載入中…</p>
+      </header>
+
+      <section class="stats-card" id="statsCard" aria-label="行程統計">
+        <div class="stat"><span>總長</span><strong id="statDistance">—</strong></div>
+        <div class="stat"><span>騎乘</span><strong id="statRide">—</strong></div>
+        <div class="stat"><span>停留</span><strong id="statStay">—</strong></div>
+        <div class="stat"><span>總時</span><strong id="statTotal">—</strong></div>
+      </section>
+
+      <div class="sidebar-actions">
+        <button type="button" class="btn primary" id="btnAddStop">＋ 新增停留點</button>
+        <button type="button" class="btn ghost" id="btnRoute" title="依地址重新規劃路線">規劃路線</button>
+        <button type="button" class="btn ghost" id="btnLoadSample">載入範例</button>
+        <button type="button" class="btn ghost" id="btnPasteItinerary">貼上行程文字</button>
+      </div>
+
+      <div class="stop-list" id="stopList"></div>
+
+      <footer class="sidebar-foot">
+        <button type="button" class="btn ghost" id="btnExport">匯出 JSON</button>
+        <button type="button" class="btn ghost" id="btnImport">匯入</button>
+        <input type="file" id="importFile" accept="application/json" hidden />
+        <p class="hint">點地圖標記可看停留時間、上傳照片。地址可搜尋後自動定位。</p>
+      </footer>
+    </aside>
+
+    <main class="map-pane">
+      <div id="map" role="application" aria-label="台灣地圖"></div>
+
+      <div class="map-stats" id="mapStats">
+        <div><span>總長</span><b id="mapDistance">—</b></div>
+        <div><span>花費時間</span><b id="mapTotal">—</b></div>
+        <div><span>起點時間</span><b id="mapStart">—</b></div>
+        <div><span>終點時間</span><b id="mapEnd">—</b></div>
+      </div>
+
+      <button type="button" class="fab-toggle" id="btnToggleSidebar" aria-label="切換側欄">☰</button>
+    </main>
+  </div>
+
+  <!-- Stop editor modal -->
+  <dialog class="modal" id="stopModal">
+    <form method="dialog" id="stopForm" class="modal-card">
+      <h2 id="modalTitle">編輯停留點</h2>
+      <input type="hidden" id="stopId" />
+
+      <label>名稱
+        <input id="fName" required placeholder="例如：坪林7-11" />
+      </label>
+      <label>地址（可搜尋）
+        <div class="row">
+          <input id="fAddress" placeholder="台灣地址或地標" />
+          <button type="button" class="btn primary compact" id="btnGeocode">定位</button>
+        </div>
+      </label>
+      <div class="row two">
+        <label>緯度 <input id="fLat" type="number" step="any" required /></label>
+        <label>經度 <input id="fLng" type="number" step="any" required /></label>
+      </div>
+      <div class="row two">
+        <label>抵達 <input id="fArrive" type="time" required /></label>
+        <label>離開 <input id="fLeave" type="time" required /></label>
+      </div>
+      <label>備註 <input id="fNote" placeholder="可選" /></label>
+
+      <div class="photo-block">
+        <div class="photo-head">
+          <span>照片</span>
+          <label class="btn ghost compact">上傳照片
+            <input type="file" id="fPhotos" accept="image/*" multiple hidden />
+          </label>
+        </div>
+        <div class="photo-grid" id="photoGrid"></div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn danger" id="btnDeleteStop">刪除</button>
+        <div class="spacer"></div>
+        <button type="button" class="btn ghost" id="btnCancelStop" value="cancel">取消</button>
+        <button type="submit" class="btn primary" id="btnSaveStop">儲存</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Bulk itinerary paste -->
+  <dialog class="modal" id="pasteModal">
+    <form method="dialog" id="pasteForm" class="modal-card">
+      <h2>貼上行程文字</h2>
+      <p class="modal-hint">每行一筆，支援例如：<br />
+        <code>05:00 台北出發</code><br />
+        <code>06:00-06:20 北宜坪林7-11 (20分鐘)</code><br />
+        <code>23:21 到台北</code>
+      </p>
+      <label>行程
+        <textarea id="fPaste" rows="12" placeholder="貼上你的行程…"></textarea>
+      </label>
+      <label class="check">
+        <input type="checkbox" id="fGeocodeAll" checked />
+        自動依名稱搜尋台灣地圖座標（需網路，較慢）
+      </label>
+      <div class="modal-actions">
+        <div class="spacer"></div>
+        <button type="button" class="btn ghost" id="btnCancelPaste">取消</button>
+        <button type="submit" class="btn primary">建立停留點</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/app.js" type="module"></script>
+</body>
+</html>
