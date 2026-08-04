@@ -1,6 +1,7 @@
 # Approval
 
-本倉庫目前主要存放**個人學習與 AI 對話約定**。
+公司簽核／簽到系統（取代加價版 Power Apps／Power Automate）：**SharePoint 清單 + Python／Graph + Teams 通知**。  
+學習節奏與現行進度見 **[學習約定.md](./學習約定.md) §4A**。
 
 ## 約定檔（請先讀）
 
