@@ -1,7 +1,7 @@
 # Approval
 
-公司簽核／簽到系統（取代加價版 Power Apps／Power Automate）：**SharePoint 清單 + Python／Graph + Teams 通知**。  
-學習節奏與現行進度見 **[學習約定.md](./學習約定.md) §4A**。
+公司簽核：紙本風純文字表單＋JSON 欄位引擎＋簽名流水線＋類 LINE 對話室＋依身分顯示隱私欄。  
+現行進度見 **[學習約定.md](./學習約定.md) §4A**；欄位範例見 [`schema/form-schema.example.json`](./schema/form-schema.example.json)。
 
 ## 約定檔（請先讀）
 
