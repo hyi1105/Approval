@@ -1,6 +1,15 @@
 # Approval
 
-本倉庫目前主要存放**個人學習與 AI 對話約定**。
+公司簽核：紙本風純文字表單＋JSON 欄位引擎＋簽名流水線＋類 LINE 對話室＋依身分顯示隱私欄。  
+現行進度見 **[學習約定.md](./學習約定.md) §4A**；欄位範例見 [`schema/form-schema.example.json`](./schema/form-schema.example.json)。
+
+## 假畫面（Teams 風格）
+
+- 本機／預覽：打開 [`docs/index.html`](./docs/index.html)
+- 公開頁（合併到 `main` 並啟用 GitHub Pages 後）：`https://hyi1105.github.io/Approval/`
+- 部署：`.github/workflows/pages.yml`（推 `main` 時把 `docs/` 發上 Pages）
+
+倉庫設定若尚未開 Pages：Settings → Pages → Build and deployment → Source 選 **GitHub Actions**。
 
 ## 約定檔（請先讀）
 
