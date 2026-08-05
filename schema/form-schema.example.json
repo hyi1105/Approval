@@ -109,8 +109,26 @@
     "rule": "畫面只渲染 visible_to 含目前登入者的欄位；personal 欄位內容不存在於共用應用資料，僅依 ID 即時讀取",
     "agent_mask": {
       "when": "sensitivity == locked 且尚未解鎖",
-      "digits": "每位數字改為 9，長度不變；非數字字元保留",
-      "text": "每字改為 〇，字數不變；空白與標點保留",
+      "mode": "element_isomorphic",
+      "purpose": "假資料供 Agent／匯出定長取值測試；元素類別與位元組長度必須與明文相同",
+      "rules": {
+        "halfwidth_digit": "0-9 → 9",
+        "fullwidth_digit": "０-９ → ９",
+        "latin_letter": "A-Z → X；a-z → x",
+        "cjk_or_wide_letter": "→ 〇（若匯出編碼下 byte 數不合則換同寬字）",
+        "symbol_space_punct": "原樣保留（含 - / . 空白 換行）"
+      },
+      "length": {
+        "char_count": "必須相等",
+        "byte_length": "在 export_encoding 下必須相等（定長／位元組偏移取值）"
+      },
+      "export_encoding": "utf-8",
+      "examples": [
+        { "in": "1280000", "out": "9999999" },
+        { "in": "0912-345-678", "out": "9999-999-999" },
+        { "in": "王小明", "out": "〇〇〇" },
+        { "in": "A12-中文", "out": "X99-〇〇" }
+      ],
       "unlock": "待定：A 本機核准／B 雙人／C 時段"
     }
   }
