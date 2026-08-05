@@ -99,6 +99,7 @@
 - 公司：簽核、Excel 匯入、PBI、Power Apps、SharePoint、Java、Notes。
 - 偏好：舊系統冷凍；新層用設定驅動（forms／versions／fields／requests）；畫面可由 AI 生成。
 - **機敏對 Agent（已定）：** `locked` 用元素同構假資料（數字→9、字母→X、中文→〇、符號原樣）；字元數與匯出編碼位元組數不變（定長取值才不跑位）。詳見 `學習約定.md` §4A.2b。
+- **公司機 Cursor（已定）：** 禁止 Run Everything；勿開 Desktop／機敏夾當專案；Local Agent 與 OS 帳號無隔離；`.cursorignore` 擋不住 Terminal／MCP。詳見 §4A.2c。
 - 學 AI 教程時，盡量把概念對到「匯入檢核／Skill 流程／Agent」等真實場景，但不要沒說一聲就開做大系統。
 
 ---
