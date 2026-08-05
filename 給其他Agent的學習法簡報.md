@@ -98,6 +98,7 @@
 ### 7. 與工作的橋接（我常有的背景）
 - 公司：簽核、Excel 匯入、PBI、Power Apps、SharePoint、Java、Notes。
 - 偏好：舊系統冷凍；新層用設定驅動（forms／versions／fields／requests）；畫面可由 AI 生成。
+- **機敏對 Agent（已定）：** `locked` 欄位預設遮罩——數字同位數 `9`、文字同字數 `〇`；解鎖後才見明文。詳見 `學習約定.md` §4A.2b。
 - 學 AI 教程時，盡量把概念對到「匯入檢核／Skill 流程／Agent」等真實場景，但不要沒說一聲就開做大系統。
 
 ---
