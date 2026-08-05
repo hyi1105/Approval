@@ -72,7 +72,7 @@
       "visible_to": ["owner"],
       "storage": "personal",
       "sensitivity": "locked",
-      "note": "不寫入共用清單；依登入者 ID 從個人儲存空間讀出後填入畫面；對 Agent 預設同字數〇 遮罩"
+      "note": "不寫入共用清單；依登入者 ID 從個人儲存空間讀出；對 Agent 未解鎖時走元素同構遮罩（文字→〇，位元組長度不變）"
     },
     {
       "name": "sales_amount_example",
@@ -83,7 +83,7 @@
       "visible_to": ["owner"],
       "storage": "personal",
       "sensitivity": "locked",
-      "note": "示範：Agent 未解鎖時見同位數 9（例 1280000→9999999）"
+      "note": "示範：Agent 未解鎖時 1280000→9999999（同位元組／同元素類別）"
     }
   ],
   "actions": ["submit", "approve", "deny", "return", "notify_request"],
