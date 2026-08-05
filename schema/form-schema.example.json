@@ -16,6 +16,7 @@
       "editable_by": ["applicant"],
       "visible_to": ["applicant", "approver", "agent"],
       "storage": "shared",
+      "sensitivity": "open",
       "readonly_when": ["status != draft"]
     },
     {
@@ -26,7 +27,8 @@
       "required": true,
       "editable_by": ["applicant"],
       "visible_to": ["applicant", "approver", "agent"],
-      "storage": "shared"
+      "storage": "shared",
+      "sensitivity": "open"
     },
     {
       "name": "days",
@@ -36,6 +38,7 @@
       "editable_by": ["applicant"],
       "visible_to": ["applicant", "approver", "agent"],
       "storage": "shared",
+      "sensitivity": "open",
       "required_when": "leave_type != null"
     },
     {
@@ -45,7 +48,8 @@
       "required": true,
       "editable_by": ["applicant"],
       "visible_to": ["applicant", "approver", "agent"],
-      "storage": "shared"
+      "storage": "shared",
+      "sensitivity": "open"
     },
     {
       "name": "agent",
@@ -56,7 +60,8 @@
       "visible_when": "need_cover == yes",
       "editable_by": ["applicant"],
       "visible_to": ["applicant", "approver", "agent"],
-      "storage": "shared"
+      "storage": "shared",
+      "sensitivity": "open"
     },
     {
       "name": "private_note",
@@ -66,7 +71,19 @@
       "editable_by": ["owner"],
       "visible_to": ["owner"],
       "storage": "personal",
-      "note": "不寫入共用清單；依登入者 ID 從個人儲存空間讀出後填入畫面"
+      "sensitivity": "locked",
+      "note": "不寫入共用清單；依登入者 ID 從個人儲存空間讀出後填入畫面；對 Agent 預設同字數〇 遮罩"
+    },
+    {
+      "name": "sales_amount_example",
+      "display_name": "業績金額（機敏範例）",
+      "type": "number",
+      "required": false,
+      "editable_by": ["owner"],
+      "visible_to": ["owner"],
+      "storage": "personal",
+      "sensitivity": "locked",
+      "note": "示範：Agent 未解鎖時見同位數 9（例 1280000→9999999）"
     }
   ],
   "actions": ["submit", "approve", "deny", "return", "notify_request"],
@@ -89,6 +106,12 @@
     "identity_key": "user_id",
     "shared_store": "sharepoint_list",
     "personal_store": "user_personal_space",
-    "rule": "畫面只渲染 visible_to 含目前登入者的欄位；personal 欄位內容不存在於共用應用資料，僅依 ID 即時讀取"
+    "rule": "畫面只渲染 visible_to 含目前登入者的欄位；personal 欄位內容不存在於共用應用資料，僅依 ID 即時讀取",
+    "agent_mask": {
+      "when": "sensitivity == locked 且尚未解鎖",
+      "digits": "每位數字改為 9，長度不變；非數字字元保留",
+      "text": "每字改為 〇，字數不變；空白與標點保留",
+      "unlock": "待定：A 本機核准／B 雙人／C 時段"
+    }
   }
 }
