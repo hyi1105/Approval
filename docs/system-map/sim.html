@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>System Map 模擬｜角色 × 情境</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./sim.css" />
+</head>
+<body>
+  <a class="skip" href="#city">跳到欄位地圖</a>
+
+  <header class="top">
+    <div class="top-brand">
+      <p class="brand">System Map 模擬</p>
+      <h1 id="system-name">載入中…</h1>
+      <p class="promise">所有欄位像地圖固定在原地——換角色／情境只改顏色，馬路不會消失。</p>
+    </div>
+
+    <form class="controls" id="controls" aria-label="角色與情境">
+      <fieldset>
+        <legend>我是誰</legend>
+        <div class="chips" id="role-chips" role="radiogroup" aria-label="角色"></div>
+      </fieldset>
+      <fieldset>
+        <legend>現在情境</legend>
+        <div class="chips" id="scene-chips" role="radiogroup" aria-label="情境"></div>
+      </fieldset>
+    </form>
+
+    <ul class="legend" aria-label="顏色圖例">
+      <li><span class="swatch edit"></span>我會填／會改</li>
+      <li><span class="swatch view"></span>我看得到（不能改）</li>
+      <li><span class="swatch use"></span>這步會用到／依賴</li>
+      <li><span class="swatch idle"></span>仍在地圖上（這步與我無關）</li>
+      <li><span class="swatch break"></span>這情境會壞／缺值風險</li>
+    </ul>
+  </header>
+
+  <div class="stage">
+    <section class="narrate" aria-live="polite">
+      <h2 id="scene-title">選一個角色與情境</h2>
+      <p id="scene-blurb"></p>
+      <p class="hint" id="paint-summary"></p>
+    </section>
+
+    <div class="city-wrap">
+      <svg class="roads" id="roads" aria-hidden="true"></svg>
+      <div class="city" id="city" role="application" aria-label="欄位城市地圖：位置固定，顏色隨模擬改變">
+        <!-- districts injected: fixed grid slots, never removed -->
+      </div>
+    </div>
+
+    <aside class="inspector" id="inspector" aria-label="欄位情境說明">
+      <h2>點地圖上的欄位</h2>
+      <p class="muted">認識用意＝看它在「這個角色＋這個情境」裡實際會怎樣，不是背定義。</p>
+      <div id="inspect-body">
+        <p class="placeholder">尚未點選。欄位都在右邊／左邊固定位置，不會因為你換人就搬走。</p>
+      </div>
+    </aside>
+  </div>
+
+  <footer class="foot">
+    <a href="./index.html">回一眼圖</a>
+    · 資料 <code>resignation.example.json</code>
+    · Skill <code>system-map</code>
+  </footer>
+
+  <script src="./sim.js" type="module"></script>
+</body>
+</html>

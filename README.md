@@ -13,6 +13,7 @@
 | JSON schema | [`schema/system-map/system-map.schema.json`](./schema/system-map/system-map.schema.json) |
 | 離職單範例 | [`schema/system-map/resignation.example.json`](./schema/system-map/resignation.example.json) |
 | 一眼圖頁 | [`docs/system-map/`](./docs/system-map/index.html) |
+| 角色×情境模擬 | [`docs/system-map/sim.html`](./docs/system-map/sim.html)（地圖位置固定，只改顏色） |
 
 地圖骨架固定 **12345（3＝資料家主錨）**：故事 → 角色流程 → 表與欄位血緣 → 權限瀑布 → 變更衝擊。
 
