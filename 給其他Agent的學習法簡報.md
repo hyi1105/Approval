@@ -4,7 +4,7 @@
 > **完整約定與進度：** 見同倉庫 `學習約定.md`  
 > **GitHub：** https://github.com/hyi1105/Approval（分支以最新 `學習約定` 為準）
 
-最後更新：2026-08-04（現行主線＝公司簽核 Approval，見 `學習約定.md` §4A）
+最後更新：2026-08-06（主線 Approval＋system-map Skill，見 `學習約定.md` §4A／§4A.4）
 
 ---
 
@@ -99,6 +99,7 @@
 - 公司：簽核、Excel 匯入、PBI、Power Apps、SharePoint、Java、Notes。
 - 偏好：舊系統冷凍；新層用設定驅動（forms／versions／fields／requests）；畫面可由 AI 生成。
 - 學 AI 教程時，盡量把概念對到「匯入檢核／Skill 流程／Agent」等真實場景，但不要沒說一聲就開做大系統。
+- **陌生系統地圖：** 用倉庫 Skill `/system-map`（見 `學習約定.md` §4A.4）產出 12345 一眼圖（3＝資料家）：表在哪、欄怎麼來、誰看誰編、改來源會炸哪。
 
 ---
 

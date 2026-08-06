@@ -1,0 +1,209 @@
+{
+  "map_version": "0.1",
+  "system": {
+    "id": "resignation",
+    "name": "離職單簽核系統",
+    "summary": "員工填離職單，經部門主管與人資確認後結案通知；人事主檔來自外部同步。",
+    "stores": [
+      {
+        "id": "pg",
+        "kind": "postgres",
+        "label": "Postgres",
+        "notes": "離職單主檔與人員主檔存放處（示意）"
+      },
+      {
+        "id": "sp",
+        "kind": "sharepoint",
+        "label": "SharePoint",
+        "url": "https://example.sharepoint.com/sites/hr/resignation",
+        "notes": "來源／文件入口（示意 URL）"
+      },
+      {
+        "id": "hr_api",
+        "kind": "api",
+        "label": "人事 API（HR sync）",
+        "notes": "人員主檔同步來源；若改 SAP 則替換此節點"
+      }
+    ]
+  },
+  "roles": [
+    {
+      "id": "employee",
+      "label": "員工／申請人",
+      "summary": "只能看／編自己的單；多部門時可選部門"
+    },
+    {
+      "id": "manager",
+      "label": "部門主管",
+      "summary": "可看下屬資料，不可改申請內容，負責簽核"
+    },
+    {
+      "id": "hr",
+      "label": "人資",
+      "summary": "可確認／核准，不可改員工原送出內容"
+    }
+  ],
+  "story": {
+    "trigger": "員工提出離職申請",
+    "background": "公司需要可追蹤的離職簽核：誰申請、屬哪部門、主管與人資依序確認，並在結案時通知相關人。",
+    "steps": [
+      {
+        "id": "step1",
+        "label": "STEP1 員工填單",
+        "actor": "employee",
+        "action": "填寫離職單；姓名／部門依權限與人員主檔帶入或選擇",
+        "notes": "不可代填他人（除非另有代理規則）"
+      },
+      {
+        "id": "step2",
+        "label": "STEP2 部門主管簽核",
+        "actor": "manager",
+        "action": "審核下屬離職單；可見欄位、不可編輯申請內容",
+        "notes": "可觸發待簽通知"
+      },
+      {
+        "id": "step3",
+        "label": "STEP3 人資確認",
+        "actor": "hr",
+        "action": "人資核對與確認；不可改員工原內容",
+        "notes": "ID 不存在等錯誤在此或同步階段處理"
+      },
+      {
+        "id": "step4",
+        "label": "STEP4 結案通知",
+        "actor": "hr",
+        "action": "結案並通知相關角色",
+        "notes": "通知觸發條件依狀態變更"
+      }
+    ]
+  },
+  "tables": [
+    {
+      "id": "resignation",
+      "label": "離職單主檔",
+      "store": "pg",
+      "notes": "實際申請單",
+      "fields": [
+        {
+          "id": "id",
+          "label": "ID",
+          "type": "int",
+          "required": true,
+          "source": {
+            "kind": "auto",
+            "notes": "流水號，系統自動產生"
+          },
+          "filled_by": [],
+          "visible_to": ["employee", "manager", "hr"],
+          "editable_by": [],
+          "consumed_by": ["step2", "step3", "step4", "通知文案"],
+          "attributes": "主鍵／單號",
+          "step_matrix": [
+            { "step": "step1", "role": "employee", "visible": true, "editable": false, "must_fill": false },
+            { "step": "step2", "role": "manager", "visible": true, "editable": false, "must_fill": false },
+            { "step": "step3", "role": "hr", "visible": true, "editable": false, "must_fill": false }
+          ]
+        },
+        {
+          "id": "department",
+          "label": "部門",
+          "type": "varchar",
+          "required": true,
+          "source": {
+            "kind": "lookup",
+            "from": "personnel.department",
+            "condition": "依申請人對應人員主檔；若一人多部門則申請人選擇",
+            "notes": "畫面依申請人身分自動帶入"
+          },
+          "filled_by": ["employee"],
+          "visible_to": ["employee", "manager", "hr"],
+          "editable_by": ["employee"],
+          "consumed_by": ["step2 主管路由", "step3 人資歸檔", "報表"],
+          "attributes": "簽核畫面上申請人可選（多部門時）；主管／人資可見不可改",
+          "step_matrix": [
+            { "step": "step1", "role": "employee", "visible": true, "editable": true, "must_fill": true },
+            { "step": "step2", "role": "manager", "visible": true, "editable": false, "must_fill": false },
+            { "step": "step3", "role": "hr", "visible": true, "editable": false, "must_fill": false }
+          ]
+        },
+        {
+          "id": "name_id",
+          "label": "姓名",
+          "type": "int",
+          "required": true,
+          "source": {
+            "kind": "lookup",
+            "from": "personnel.id",
+            "condition": "下拉／搜尋人員主檔；邏輯限制不可代填他人",
+            "notes": "存的是人員 ID，畫面顯示姓名"
+          },
+          "filled_by": ["employee"],
+          "visible_to": ["employee", "manager", "hr"],
+          "editable_by": ["employee"],
+          "consumed_by": ["step2", "step3", "step4 通知對象"],
+          "attributes": "derived_permission：僅能選／填自己",
+          "step_matrix": [
+            { "step": "step1", "role": "employee", "visible": true, "editable": true, "must_fill": true },
+            { "step": "step2", "role": "manager", "visible": true, "editable": false, "must_fill": false },
+            { "step": "step3", "role": "hr", "visible": true, "editable": false, "must_fill": false }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "personnel",
+      "label": "人員主檔",
+      "store": "pg",
+      "notes": "由人事來源同步；若改 SAP 則改 api_sync 來源",
+      "fields": [
+        {
+          "id": "id",
+          "label": "ID",
+          "type": "int",
+          "required": true,
+          "source": {
+            "kind": "api_sync",
+            "from": "hr_api",
+            "notes": "HR 同步；改 SAP 時仍應對到唯一員工鍵"
+          },
+          "filled_by": [],
+          "visible_to": ["employee", "manager", "hr"],
+          "editable_by": [],
+          "consumed_by": ["resignation.name_id"],
+          "attributes": "主檔主鍵"
+        },
+        {
+          "id": "department",
+          "label": "部門",
+          "type": "varchar",
+          "required": true,
+          "source": {
+            "kind": "api_sync",
+            "from": "hr_api",
+            "notes": "目前 HR sync；若 SAP 無部門欄，下游 lookup 會失敗"
+          },
+          "filled_by": [],
+          "visible_to": ["employee", "manager", "hr"],
+          "editable_by": [],
+          "consumed_by": ["resignation.department", "step1 自動帶入", "step2 主管路由"],
+          "attributes": "主檔屬性；多值部門時影響申請人選項"
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "from": "resignation.name_id",
+      "to": "personnel.id",
+      "via": "lookup",
+      "label": "姓名下拉連人員 ID"
+    },
+    {
+      "from": "resignation.department",
+      "to": "personnel.department",
+      "via": "lookup",
+      "label": "部門依人員主檔帶入／選擇"
+    }
+  ],
+  "one_liner": "這系統就是：員工因為要離職而開單，主管與人資依序看單但不能改內容，資料放在 Postgres 的離職單與人員主檔，人員資料從人事 API 同步進來。"
+}

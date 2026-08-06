@@ -3,9 +3,23 @@
 公司簽核：紙本風純文字表單＋JSON 欄位引擎＋簽名流水線＋類 LINE 對話室＋依身分顯示隱私欄。  
 現行進度見 **[學習約定.md](./學習約定.md) §4A**；欄位範例見 [`schema/form-schema.example.json`](./schema/form-schema.example.json)。
 
+## 系統地圖 Skill（一眼看懂任意系統）
+
+遇到陌生系統、要查「表在哪／欄怎麼來／誰能編／改來源會炸哪」時，用 Cursor Skill **`/system-map`**：
+
+| 項目 | 路徑 |
+|------|------|
+| Skill 說明 | [`.cursor/skills/system-map/SKILL.md`](./.cursor/skills/system-map/SKILL.md) |
+| JSON schema | [`schema/system-map/system-map.schema.json`](./schema/system-map/system-map.schema.json) |
+| 離職單範例 | [`schema/system-map/resignation.example.json`](./schema/system-map/resignation.example.json) |
+| 一眼圖頁 | [`docs/system-map/`](./docs/system-map/index.html) |
+
+地圖骨架固定 **12345（3＝資料家主錨）**：故事 → 角色流程 → 表與欄位血緣 → 權限瀑布 → 變更衝擊。
+
 ## 假畫面（Teams 風格）
 
 - 本機／預覽：打開 [`docs/index.html`](./docs/index.html)
+- 系統一眼圖：[`docs/system-map/index.html`](./docs/system-map/index.html)
 - 公開頁（合併到 `main` 並啟用 GitHub Pages 後）：`https://hyi1105.github.io/Approval/`
 - 部署：`.github/workflows/pages.yml`（推 `main` 時把 `docs/` 發上 Pages）
 
