@@ -43,17 +43,17 @@ description: >-
 
 ## 工作流程（Agent 必做）
 
-1. **蒐集**：讀使用者貼的表、截圖描述、口頭說明、現有 schema／程式。缺關鍵資訊時最多問 **3** 題（過關用），其餘標 `unknown`／`待補`，不要卡住。
-2. **結構化**：寫出符合 `assets/system-map.schema.json` 的 JSON。
-3. **落檔**：存到使用者指定路徑，或本 Skill 旁 `assets/<system-id>.json`。範例見 `assets/resignation.example.json`。
-4. **驗證**：執行 `python scripts/validate_map.py <json路徑>`。
-5. **畫圖**：用 Mermaid（見 `references/output-views.md`）產出至少：
+> **本倉庫現況：** 僅保留本 Skill 的 Markdown（本檔＋`references/`）。JSON schema、範例、Python 腳本、靜態網頁皆已刪；下列流程以「對話產出 Mermaid＋JSON 文字」為主。
+
+1. **蒐集**：讀使用者貼的表、截圖描述、口頭說明。缺關鍵資訊時最多問 **3** 題（過關用），其餘標 `unknown`／`待補`，不要卡住。
+2. **結構化**：依本檔欄位約定產出 system-map JSON（可貼在對話或另存使用者指定路徑）。
+3. **畫圖**：用 Mermaid（見 `references/output-views.md`）產出至少：
    - 一張「整系統一眼圖」（含 1→5）
    - 資料血緣／ER
    - 角色×步驟流程
    - 欄位權限瀑布（可簡化成關鍵欄）
-6. **衝擊**：若使用者問變更，跑 `python scripts/impact_query.py <json> --table <表> --field <欄>` 或依 JSON 的 `lineage` 手動推導，列出受影響表／欄／步驟／角色。
-7. **視覺頁／模擬頁**：倉庫內靜態一眼圖與 `sim.html` 已移除；以對話內 Mermaid＋JSON 為主（互動模擬規則仍見 `references/output-views.md` §G）。
+4. **衝擊**：若使用者問變更，依 JSON 的 `lineage`／`consumed_by` 推導（規則見 `references/impact-analysis.md`）。
+5. **互動模擬**：無靜態頁時，在對話用固定欄位地圖＋改色規則說明（見 `references/output-views.md` §G）。
 
 語言：一律台灣繁體中文。教學時標明關卡與完成％（見學習約定）。
 
@@ -88,8 +88,7 @@ description: >-
 訪談清單見 `references/interview-checklist.md`。  
 衝擊推導規則見 `references/impact-analysis.md`。
 
-## 與本倉庫 Approval 的關係
+## 與 Approval 簽核構想的關係
 
-Approval 紙本簽核的欄位 schema（`schema/form-schema.example.json`）是「單一表單引擎」視角。  
-本 Skill 是上一層：**跨表、跨來源、跨角色、跨平台**的系統地圖。  
-分析 Approval 或離職單時，兩者可並存：form-schema 管畫面欄位；system-map 管全貌與衝擊。
+紙本簽核的 form-schema 是「單一表單引擎」視角（範例檔已自本倉庫刪除）。  
+本 Skill 是上一層：**跨表、跨來源、跨角色、跨平台**的系統地圖方法論（以 Markdown 保存）。

@@ -108,7 +108,7 @@
 | 情境 | 做法 |
 |------|------|
 | **新開任何 Chat／Agent** | 貼「最短可貼版」全文 |
-| **Cursor 專案** | 保留 `.cursor/rules/user-learning-agreements.mdc` + `學習約定.md` |
+| **Cursor 專案** | 以 `學習約定.md` 為準（本倉庫已精簡為僅 Markdown） |
 | **只要對方讀連結** | 丟 GitHub 上本檔網址，並說「請先讀並遵守」 |
 
 開始新主題時可加一句：
