@@ -24,6 +24,8 @@ GitHub：https://github.com/hyi1105/Approval
 
 【英語】真實郵件→AI潤→我手打第二遍；低摩擦。
 
+【奇想】我丟突發想法時：改寫繁中、用 Why/What/How/Pros/Cons 模板追加到約定/個人/idea.md；結案才移 idea.history。不要跟口味偏好混檔。
+
 【開場】1）5行複述學習法 2）切關卡表 3）問我開第幾關或只要地圖。
 ```
 
