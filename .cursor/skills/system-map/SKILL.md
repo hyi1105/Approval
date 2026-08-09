@@ -44,8 +44,8 @@ description: >-
 ## 工作流程（Agent 必做）
 
 1. **蒐集**：讀使用者貼的表、截圖描述、口頭說明、現有 schema／程式。缺關鍵資訊時最多問 **3** 題（過關用），其餘標 `unknown`／`待補`，不要卡住。
-2. **結構化**：寫出符合 `assets/system-map.schema.json`（與倉庫 `schema/system-map/system-map.schema.json` 同形）的 JSON。
-3. **落檔**：存到 `schema/system-map/<system-id>.json`（或使用者指定路徑）。範例見 `resignation.example.json`。
+2. **結構化**：寫出符合 `assets/system-map.schema.json` 的 JSON。
+3. **落檔**：存到使用者指定路徑，或本 Skill 旁 `assets/<system-id>.json`。範例見 `assets/resignation.example.json`。
 4. **驗證**：執行 `python scripts/validate_map.py <json路徑>`。
 5. **畫圖**：用 Mermaid（見 `references/output-views.md`）產出至少：
    - 一張「整系統一眼圖」（含 1→5）
@@ -53,11 +53,7 @@ description: >-
    - 角色×步驟流程
    - 欄位權限瀑布（可簡化成關鍵欄）
 6. **衝擊**：若使用者問變更，跑 `python scripts/impact_query.py <json> --table <表> --field <欄>` 或依 JSON 的 `lineage` 手動推導，列出受影響表／欄／步驟／角色。
-7. **可選視覺頁**：把 JSON 接到 `docs/system-map/` 預覽器（離職單範例已接好）。
-8. **互動模擬頁**（優先給使用者試）：`docs/system-map/sim.html`  
-   - 選角色 × 情境，欄位**地理位置固定**（禁止因角色把格子隱藏／重排；只能改顏色）。  
-   - 會填／會改＝醒目色；只看／依賴／無關＝其他色或變淡；衝擊情境＝紅色。  
-   - 點欄位看「在這個情境裡實際會怎樣」，不是背定義。
+7. **視覺頁／模擬頁**：倉庫內靜態一眼圖與 `sim.html` 已移除；以對話內 Mermaid＋JSON 為主（互動模擬規則仍見 `references/output-views.md` §G）。
 
 語言：一律台灣繁體中文。教學時標明關卡與完成％（見學習約定）。
 

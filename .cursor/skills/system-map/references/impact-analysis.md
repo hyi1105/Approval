@@ -15,7 +15,7 @@
 
 ## 腳本
 ```bash
-python scripts/impact_query.py schema/system-map/resignation.example.json \
+python scripts/impact_query.py assets/resignation.example.json \
   --table personnel --field department
 ```
 
