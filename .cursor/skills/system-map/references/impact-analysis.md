@@ -14,10 +14,7 @@
 5. 輸出清單：受影響表.欄｜嚴重｜哪個步驟｜哪個角色會碰到｜建議補救。
 
 ## 腳本
-```bash
-python scripts/impact_query.py schema/system-map/resignation.example.json \
-  --table personnel --field department
-```
+倉庫內 Python 衝擊腳本已刪；改依上方推導步驟與 JSON 手動列出衝擊鏈。
 
 ## 回答格式（給使用者）
 1. 一句結論（會不會炸主流程）
