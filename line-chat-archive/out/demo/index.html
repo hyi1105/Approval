@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>和小美的對話（示範） — LINE 封存</title>
+  <style>
+    :root {
+      --bg: #e8f3ee;
+      --panel: #f7fbf9;
+      --ink: #17302a;
+      --muted: #5b726b;
+      --line: #c5d9d1;
+      --accent: #06c755;
+      --bubble: #ffffff;
+      --shadow: 0 10px 30px rgba(23, 48, 42, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 600px at 10% -10%, #d7f0e3 0%, transparent 55%),
+        radial-gradient(900px 500px at 100% 0%, #cfe6ff 0%, transparent 45%),
+        var(--bg);
+      min-height: 100vh;
+    }
+    .wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 28px 16px 64px;
+    }
+    .hero {
+      background: linear-gradient(160deg, #12352c, #1d5c45 55%, #0f7a45);
+      color: #f4fff8;
+      border-radius: 28px;
+      padding: 28px 24px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -20% -40% 40%;
+      height: 180px;
+      background: radial-gradient(circle, rgba(6,199,85,.35), transparent 70%);
+      pointer-events: none;
+    }
+    .brand {
+      font-size: 0.85rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.8;
+      margin: 0 0 10px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      line-height: 1.2;
+      font-weight: 700;
+    }
+    .sub { margin: 0; opacity: 0.9; max-width: 36em; }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      margin-top: 18px;
+      font-size: 0.92rem;
+      opacity: 0.92;
+    }
+    .warn {
+      margin: 18px 0 0;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      font-size: 0.9rem;
+    }
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      margin: 18px 0 8px;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      backdrop-filter: blur(8px);
+      background: color-mix(in srgb, var(--bg) 80%, transparent);
+      padding: 10px 0;
+    }
+    input[type="search"] {
+      flex: 1;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 12px 16px;
+      font: inherit;
+      background: var(--panel);
+      color: var(--ink);
+    }
+    .thread {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .bubble {
+      background: var(--bubble);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 12px 14px;
+      box-shadow: var(--shadow);
+      animation: rise 0.45s ease both;
+    }
+    .bubble:nth-child(odd) { animation-delay: 0.02s; }
+    .bubble header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      font-size: 0.86rem;
+    }
+    .sender { font-weight: 700; color: #0f7a45; }
+    time { color: var(--muted); white-space: nowrap; }
+    .text { white-space: pre-wrap; word-break: break-word; line-height: 1.55; }
+    .muted { color: var(--muted); }
+    .media img, .media video {
+      display: block;
+      width: 100%;
+      max-height: 420px;
+      object-fit: contain;
+      background: #0b1f19;
+      border-radius: 12px;
+    }
+    audio.media { width: 100%; }
+    .caption, .file { margin-top: 6px; font-size: 0.9rem; color: var(--muted); }
+    .file { color: #0f7a45; }
+    footer.note {
+      margin-top: 28px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .bubble { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <p class="brand">LINE ARCHIVE</p>
+      <h1>和小美的對話（示範）</h1>
+      <p class="sub">本機離線封存：文字與媒體留在這一包資料夾裡，不需登入 LINE。</p>
+      <div class="meta">
+        <span>訊息 6 則</span>
+        <span>媒體 2 件</span>
+        <span>產生於 2026-08-12 02:11</span>
+      </div>
+      <p class="warn">這不是官方備份格式，也無法把內容還原進手機 LINE App。刪聊天前記得先確認這裡能正常開啟。</p>
+    </section>
+
+    <div class="toolbar">
+      <input type="search" id="q" placeholder="搜尋發言者或文字…" autocomplete="off">
+    </div>
+
+    <section class="thread" id="thread">
+      
+<article class="bubble">
+  <header><span class="sender">我</span><time>2024-05-01 10:00</time></header>
+  <div class="text">週末要不要去野餐？</div>
+</article>
+<article class="bubble">
+  <header><span class="sender">小美</span><time>2024-05-01 10:01</time></header>
+  <div class="text">好啊，我帶水果</div>
+</article>
+<article class="bubble">
+  <header><span class="sender">小美</span><time>2024-05-01 10:05</time></header>
+  <a class="media" href="media/picnic.jpg" target="_blank" rel="noopener"><img src="media/picnic.jpg" alt="picnic.jpg" loading="lazy"></a>
+</article>
+<article class="bubble">
+  <header><span class="sender">我</span><time>2024-05-01 10:06</time></header>
+  <div class="text">陽光超好</div>
+</article>
+<article class="bubble">
+  <header><span class="sender">我</span><time>2024-05-01 10:10</time></header>
+  <video class="media" controls preload="metadata" src="media/clip.mp4"></video><div class="caption">clip.mp4</div>
+</article>
+<article class="bubble">
+  <header><span class="sender">小美</span><time>2024-05-01 10:12</time></header>
+  <div class="text">下次再約！</div>
+</article>
+    </section>
+
+    <footer class="note">
+      封存工具僅整理你提供的文字與檔案，不會讀取 LINE App 內部資料。
+      請自行保管好這整個資料夾（含 media/）。
+    </footer>
+  </div>
+  <script>
+    const q = document.getElementById("q");
+    const items = [...document.querySelectorAll(".bubble")];
+    q.addEventListener("input", () => {
+      const needle = q.value.trim().toLowerCase();
+      for (const el of items) {
+        el.hidden = needle && !el.textContent.toLowerCase().includes(needle);
+      }
+    });
+  </script>
+</body>
+</html>
