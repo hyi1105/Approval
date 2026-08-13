@@ -46,8 +46,11 @@ description: >-
 | `native` | 「變成 SQL／C#／PA 白話」 | 用該領域詞彙講清楚：這份在幹嘛、結構、風險點 |
 | `student` | 「學生版／好讀」 | 更短、比喻多、少行話；可附 1～3 個檢查題 |
 | `map` | 「地圖／系統／誰填誰用」 | 讀完 system-map Skill，產出 12345＋Mermaid |
+| `play` | 「網頁版／可操作／模擬用」 | **沙盒可操作**構想：map JSON → 可填、可換角色的網頁；正式產物待重建。規則見 system-map `references/output-views.md` §G。真上線（Run）另走 Approval，不是本鏡片預設 |
 
 可加次要標籤（不另開長文）：`diff-risk`（改了會炸哪）、`glossary`（專有詞 5 個內）。
+
+**誠實邊界：** `play` ≠ 取代任意正式系統。View／Play 對「表＋流程＋角色」最划算；厚客戶端／複雜 C#／整包 ERP 只能局部模擬或接 Run 專案。
 
 ## 輸出順序（同一畫面）
 
