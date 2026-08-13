@@ -174,7 +174,7 @@
     el.systemHint.textContent = "沒有系統就按「抽出新系統」。一流程一契約。";
   }
 
-  function renderRoles(system) {
+  function renderRoles(system, preferStepRole = false) {
     const roles = [];
     const seen = new Set();
     for (const p of system.pipeline) {
@@ -189,9 +189,12 @@
           `<option value="${escapeAttr(p.role)}">${escapeHtml(p.label)}</option>`
       )
       .join("");
-    if (roles.some((r) => r.role === prev)) el.roleSelect.value = prev;
-    else {
-      const step = currentStep(system, ensureCase(system));
+    const step = currentStep(system, ensureCase(system));
+    if (preferStepRole && step) {
+      el.roleSelect.value = step.role;
+    } else if (roles.some((r) => r.role === prev)) {
+      el.roleSelect.value = prev;
+    } else {
       el.roleSelect.value = step ? step.role : roles[0]?.role || "";
     }
   }
@@ -369,12 +372,12 @@
     el.btnRequestFill.disabled = !myTurn || step.action === "submit";
   }
 
-  function renderAll() {
+  function renderAll(opts = {}) {
     const system = activeSystem();
     const c = ensureCase(system);
     el.formTitle.textContent = system.name;
     renderSystems();
-    renderRoles(system);
+    renderRoles(system, !!opts.preferStepRole);
     renderPipeline(system, c);
     renderStatus(system, c);
     renderFields(system, c);
@@ -593,7 +596,7 @@
   el.systemSelect.addEventListener("change", () => {
     store.activeSystemId = el.systemSelect.value;
     saveStore();
-    renderAll();
+    renderAll({ preferStepRole: true });
   });
 
   el.roleSelect.addEventListener("change", () => {
@@ -620,7 +623,7 @@
     resetCase(sys.id);
     saveStore();
     el.builderDialog.close();
-    renderAll();
+    renderAll({ preferStepRole: true });
   });
 
   // 雙擊狀態列：重置目前案件（方便重玩）
@@ -629,7 +632,7 @@
     const system = activeSystem();
     resetCase(system.id);
     saveStore();
-    renderAll();
+    renderAll({ preferStepRole: true });
   });
 
   function escapeHtml(s) {
