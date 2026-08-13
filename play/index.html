@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Approval Play — 行為保真沙盒</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="alternate icon" href="favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Sora:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div class="brand-block">
+        <p class="brand">Approval</p>
+        <p class="tag">Play 沙盒 · 行為契約（可編／必填／動作）· 畫面可不同</p>
+      </div>
+      <div class="top-actions">
+        <label class="role-switch">
+          <span>現在身分</span>
+          <select id="roleSelect" aria-label="切換身分"></select>
+        </label>
+        <button type="button" id="btnNewSystem" class="btn ghost">抽出新系統</button>
+      </div>
+    </header>
+
+    <aside class="rail" aria-label="系統與流水線">
+      <section class="panel">
+        <h2>系統</h2>
+        <select id="systemSelect" aria-label="選擇系統"></select>
+        <p id="systemHint" class="hint"></p>
+      </section>
+      <section class="panel">
+        <h2>流水線</h2>
+        <ol id="pipelineList" class="pipeline"></ol>
+      </section>
+      <section class="panel status-panel">
+        <h2>狀態</h2>
+        <p id="caseStatus" class="status-pill">未開始</p>
+        <p id="stepHint" class="hint"></p>
+      </section>
+    </aside>
+
+    <main class="stage">
+      <section class="sheet panel" aria-label="欄位契約表">
+        <div class="sheet-head">
+          <h1 id="formTitle">—</h1>
+          <p id="formSub" class="hint">欄位座標固定；換身分只改顏色與能不能編。</p>
+        </div>
+        <div id="fieldGrid" class="field-grid"></div>
+        <p id="fieldLegend" class="legend">
+          <span class="lg edit">可編</span>
+          <span class="lg read">只看</span>
+          <span class="lg req">必填</span>
+          <span class="lg dim">此步無關（仍在位）</span>
+        </p>
+      </section>
+
+      <section class="chat panel" aria-label="簽核對話">
+        <div class="sheet-head">
+          <h2>對話室</h2>
+          <p class="hint">像聊天：請填欄 → 送出／核准／駁回；駁回即結束。</p>
+        </div>
+        <div id="chatLog" class="chat-log" role="log" aria-live="polite"></div>
+        <div class="composer">
+          <textarea id="commentInput" rows="2" placeholder="留言（核准／請填／駁回時可附）"></textarea>
+          <div class="composer-actions">
+            <button type="button" id="btnRequestFill" class="btn ghost">請填必要欄</button>
+            <button type="button" id="btnDeny" class="btn danger">駁回（結束）</button>
+            <button type="button" id="btnPrimary" class="btn primary">送出</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="builderDialog" class="builder">
+    <form method="dialog" id="builderForm">
+      <h2>抽出一個系統</h2>
+      <p class="hint">沒有現成系統時，在這裡定義欄位與流水線。一流程一契約。</p>
+      <label>系統名稱
+        <input id="bName" name="name" required placeholder="例如：採購請款" />
+      </label>
+      <label>欄位（每行：內部名|顯示名|型態text/number/bool|必填步驟submit/approve/confirm 逗號分隔）
+        <textarea id="bFields" rows="5" required>amount|金額|number|submit
+vendor|廠商|text|submit
+budget_ok|預算足夠|bool|approve
+comment_final|結案備註|text|confirm</textarea>
+      </label>
+      <label>流水線（每行：步驟id|角色id|顯示名|動作submit/approve/confirm）
+        <textarea id="bPipe" rows="4" required>submit|applicant|申請人|submit
+mgr|manager|主管|approve
+fin|finance|財務|confirm</textarea>
+      </label>
+      <div class="composer-actions">
+        <button type="submit" value="cancel" class="btn ghost">取消</button>
+        <button type="submit" value="ok" class="btn primary">建立並進入</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
