@@ -8,6 +8,8 @@ cd play && python3 -m http.server 8765
 
 瀏覽器開 `http://localhost:8765/`。
 
+**上線成網站：** 見 [`PUBLISH.md`](./PUBLISH.md)（GitHub Pages 或整包丟到別的靜態庫）。
+
 ## 能做什麼
 
 - 沒系統 → **抽出新系統**（欄位＋流水線）
