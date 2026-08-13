@@ -1,8 +1,9 @@
 # 公司簽核 Approval（構想＋進度封存）
 
-最後更新：2026-08-09  
-觸發：談／做簽核系統時。專案：`https://github.com/hyi1105/Approval`  
-倉庫可執行產物已刪；本檔保留產品記憶。
+最後更新：2026-08-13  
+觸發：談／做簽核系統時。  
+**可執行：** `https://github.com/hyi1105/SEED` 的 `approval/`（Pages：https://hyi1105.github.io/SEED/approval/）  
+**本庫：** 構想＋模組化 `約定/`（整理歸 SEED 中，見 [`SEED/repo-atlas.md`](./SEED/repo-atlas.md)）。
 
 ## 背景與路徑
 
