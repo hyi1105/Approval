@@ -1,7 +1,7 @@
 # 約定總覽（Agent 入口）
 
 > **目的：** 省 token、好改、可累積口味。不要整包讀完。  
-> **最後更新：** 2026-08-09
+> **最後更新：** 2026-08-13
 
 ## 讀取規則（強制）
 
@@ -14,6 +14,7 @@
 | 續 dive-into-llms | + [`學習/dive-into-llms.md`](./學習/dive-into-llms.md) | — |
 | 做／談簽核 Approval | + [`系統/Approval.md`](./系統/Approval.md) | — |
 | 陌生系統／改來源衝擊 | + [`系統/system-map/SKILL.md`](./系統/system-map/SKILL.md)；需要再讀同資料夾 `references/` | — |
+| 丟程式／PDF／流程要「看懂」或學生版／地圖 | + [`系統/artifact-lens/SKILL.md`](./系統/artifact-lens/SKILL.md)；地圖鏡片再接 system-map | — |
 | 主線要對齊時 | + [`系統/主線.md`](./系統/主線.md) | — |
 | 想更合口味 | + [`個人/口味累積.md`](./個人/口味累積.md) | — |
 | 突發奇想／記 idea | + [`個人/idea.md`](./個人/idea.md)；規則 [`學習/構想流.md`](./學習/構想流.md) | 勿整份讀 history |
