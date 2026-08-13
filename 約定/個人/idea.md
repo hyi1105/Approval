@@ -1,6 +1,6 @@
 # Idea（進行中的構想）
 
-最後更新：2026-08-09  
+最後更新：2026-08-13  
 用途：突發奇想／對話構想 → AI 整理 → **寫這裡**。  
 已結案見 [`idea.history.md`](./idea.history.md)。規則見 [`../學習/構想流.md`](../學習/構想流.md)。
 
@@ -28,6 +28,21 @@
 - 完成後可查核的一句（若將來有產品）：
 - 待拍板：
 ```
+
+---
+
+## 2026-08-13 — 全 GitHub repo 整理歸 SEED
+
+- 狀態：building
+- 來源：對話「我想把我所有github上的repo, 全部都整理起來到Seed上, 有ai_md approval seed」
+- 為什麼（Why）：帳號有多個 repo（SEED／Approval／AI_MD／down-the-stairs），真相來源分散、Agent 開錯庫就接不到完整記憶；要一個總部
+- 做什麼（What）：以 **SEED** 為唯一總部；Approval 可執行碼已在 SEED；AI_MD 規格＋程式遷入 SEED；Approval 本庫只留轉址／交接；娛樂小遊戲目錄連過去但不塞程式
+- 怎麼做（How）：見 [`../系統/SEED/repo-atlas.md`](../系統/SEED/repo-atlas.md)＋[`../系統/SEED/合併執行.md`](../系統/SEED/合併執行.md)；可貼開場見 `交給SEED/可貼開場.md`。本輪 Agent 僅有 Approval 推送權，先把地圖／約定／交接包寫好
+- 優點（Pros）：一個入口、Pages 已在 SEED、約定與產品同庫
+- 缺點／風險（Cons）：歷史／CI 遷移成本；AI_MD 大檔（web 建置產物）勿整包塞；需有 SEED 推送權的 Agent 收尾
+- 不做的替代方案：維持多庫＋README 互相連（舊 `repo-org-and-token` 第一步）——本次升級為真合併
+- 完成後可查核的一句（若將來有產品）：SEED README／棋盤能看到 AI Doc＋Approval＋知識書入口；AI_MD／Approval README 頂部寫「已遷 SEED」
+- 待拍板：AI_MD／Approval 是否 archive（預設：合併驗收後再 archive）；down-the-stairs 只連不併（沿用舊偏好）
 
 ---
 
@@ -118,7 +133,8 @@
 - 待拍板：圈選後改對應項為 building  
 
 #### Repo／網域（原 AI_MD）
-- 狀態：waiting-owner  
-- Why：原庫擬刪、構想已併入本約定  
-- What：刪庫後以本檔為構想匣；品牌／網域另定或不做  
-- 待拍板：確認刪 `hyi1105/AI_MD`
+- 狀態：building  
+- Why：改為「歸 SEED 總部」而非直接刪  
+- What：程式遷 SEED `tools/ai-md/`；規格在 `約定/系統/SEED/`；驗收後 archive AI_MD  
+- 待拍板：archive 時機（預設：SEED 合併 PR 合入後）  
+- 相關：見最上方「2026-08-13 — 全 GitHub repo 整理歸 SEED」

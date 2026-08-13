@@ -1,7 +1,7 @@
 # 約定總覽（Agent 入口）
 
 > **目的：** 省 token、好改、可累積口味。不要整包讀完。  
-> **最後更新：** 2026-08-09
+> **最後更新：** 2026-08-13
 
 ## 讀取規則（強制）
 
@@ -18,6 +18,7 @@
 | 想更合口味 | + [`個人/口味累積.md`](./個人/口味累積.md) | — |
 | 突發奇想／記 idea | + [`個人/idea.md`](./個人/idea.md)；規則 [`學習/構想流.md`](./學習/構想流.md) | 勿整份讀 history |
 | 談 SEED／知識書／AI Doc | + [`系統/SEED/主題.md`](./系統/SEED/主題.md)（需要再加 `AI-Doc.md`） | — |
+| 整理 repo／歸 SEED | + [`系統/SEED/repo-atlas.md`](./系統/SEED/repo-atlas.md)；執行加 [`系統/SEED/合併執行.md`](./系統/SEED/合併執行.md) | — |
 | idea 結案归档時 | + 寫入 [`個人/idea.history.md`](./個人/idea.history.md) | 日常勿讀 |
 
 貼給外部 Agent：只用 [`學習/給其他Agent可貼版.md`](./學習/給其他Agent可貼版.md)，不要貼整庫。

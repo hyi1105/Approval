@@ -1,7 +1,8 @@
 # AI Doc 規格（自 AI_MD）
 
-最後更新：2026-08-09  
-舊稱：SmartDoc／文稿。觸發：談「像 Cursor 改 MD＋顯示 Diff」時。
+最後更新：2026-08-13  
+舊稱：SmartDoc／文稿。觸發：談「像 Cursor 改 MD＋顯示 Diff」時。  
+程式遷入目標：SEED `tools/ai-md/aidoc/`（見 [`合併執行.md`](./合併執行.md)）。
 
 ## 目標
 
@@ -28,4 +29,4 @@ AI 查詢（找素材）→ AI Doc（改檔＋Diff）→ 累積成知識書
 | Accept／Reject | 曾可用 |
 | 真 LLM／真 P2P | 見 `個人/idea.md` waiting-owner |
 
-程式本體未併入本庫；要重做時以本規格＋idea 為準。
+程式本體原在 `hyi1105/AI_MD`；合併後以 SEED `tools/ai-md/`＋本規格＋idea 為準。
