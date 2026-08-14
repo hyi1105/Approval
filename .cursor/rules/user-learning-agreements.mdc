@@ -18,5 +18,6 @@ alwaysApply: true
 6. 突發奇想 → 追加 `約定/個人/idea.md`（見 `約定/學習/構想流.md`）；結案移 `idea.history.md`。
 7. 陌生系統 → `約定/系統/system-map/SKILL.md`（或 `/system-map`）。
 8. 貼外站 Agent → `約定/學習/給其他Agent可貼版.md`。
+9. 結構／程式／血緣／流程／跑指令前 →「說明法」（`.cursor/rules/說明法.mdc`）。
 
 勿再把內容併回單一 `學習約定` 巨檔。
